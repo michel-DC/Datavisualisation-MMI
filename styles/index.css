@@ -1,0 +1,26 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+.sidebar-item--active {
+  background-color: #f8fafc; /* slate-50 */
+  border-radius: 1rem;
+}
+
+.sidebar-item--active:hover {
+  background-color: #f1f5f9; /* slate-100 */
+}
+
+/* Ensure icons in active state get the specific color */
+.sidebar-item--active i {
+  color: #2563eb; /* blue-600 */
+}
+
+/* Specific overrides for different sections if needed, utilizing data-attributes */
+[data-section="emissions"].sidebar-item--active i {
+  color: #059669; /* emerald-600 */
+}
+
+[data-section="projections"].sidebar-item--active i {
+  color: #ea580c; /* orange-600 */
+}
