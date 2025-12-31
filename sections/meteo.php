@@ -1,10 +1,12 @@
-<?php declare(strict_types=1); ?>
+<?php
+
+declare(strict_types=1); ?>
 <section id="section-meteo" data-custom-anim="true" class="section absolute inset-0 w-full h-full bg-[#f8fafc] text-slate-900 overflow-hidden font-sans flex flex-col">
-    
+
     <!-- Minimalist Header & Controls (Fixed Height) -->
     <!-- Minimalist Header & Controls (Fixed Height) -->
     <div class="flex-none bg-[#f8fafc]/90 backdrop-blur-md px-8 pt-8 pb-4 flex flex-col gap-4 z-10">
-        
+
         <!-- Titles -->
         <div>
             <h1 class="text-7xl font-normal tracking-tighter text-slate-900 mb-1">
@@ -20,7 +22,7 @@
 
         <!-- Controls (Left Aligned) -->
         <div class="flex items-end gap-3 mt-2">
-             <!-- Station Select -->
+            <!-- Station Select -->
             <div class="flex flex-col gap-1.5">
                 <label for="station-filter" class="text-[11px] font-bold text-slate-400 uppercase tracking-wider ml-1">Zone</label>
                 <div class="relative group">
@@ -63,10 +65,10 @@
 
     <!-- Dashboard Content (Fluid) -->
     <div class="flex-1 p-6 overflow-hidden flex flex-col gap-4 max-h-screen">
-        
+
         <!-- Top Row (Flex ~30% Forced) -->
         <div class="flex-none flex gap-4" style="height: 50%;">
-            
+
             <!-- Temperature Chart (Main) -->
             <div class="flex-1 bg-white rounded-[20px] p-6 shadow-[0_2px_20px_rgba(0,0,0,0.02)] border border-slate-100/50 flex flex-col">
                 <div class="flex-none flex items-center gap-4 mb-6">
@@ -98,17 +100,17 @@
                             <span class="text-xl font-medium text-slate-400 mb-1">°C</span>
                         </div>
                     </div>
-                     <div class="pt-4 border-t border-slate-100">
+                    <!-- <div class="pt-4 border-t border-slate-100">
                          <div class="flex items-center justify-between">
                               <span class="text-xs font-medium text-slate-500">Écart vs Ref</span>
                               <span class="text-xs font-bold text-emerald-600 bg-emerald-100 px-2 py-0.5 rounded">+1.8°C</span>
                          </div>
-                    </div>
+                    </div> -->
                 </div>
 
                 <!-- Sun -->
                 <div class="h-[45%] bg-white rounded-[20px] p-5 shadow-[0_2px_20px_rgba(0,0,0,0.02)] border border-slate-100/50 flex flex-col">
-                     <div class="flex-none flex items-center gap-3 mb-2">
+                    <div class="flex-none flex items-center gap-3 mb-2">
                         <div class="w-8 h-8 rounded-full bg-orange-500/10 flex items-center justify-center text-orange-500">
                             <i data-lucide="sun" class="w-4 h-4"></i>
                         </div>
@@ -123,7 +125,7 @@
 
         <!-- Bottom Row (Flex Remaining) -->
         <div class="flex-1 flex flex-col pb-6 bg-white rounded-[20px] p-6 shadow-[0_2px_20px_rgba(0,0,0,0.02)] border border-slate-100/50">
-             <div class="flex-none flex items-center justify-between mb-4">
+            <div class="flex-none flex items-center justify-between mb-4">
                 <div class="flex items-center gap-4">
                     <div class="w-10 h-10 rounded-full bg-blue-500/10 flex items-center justify-center text-blue-500">
                         <i data-lucide="cloud-rain" class="w-5 h-5"></i>
@@ -131,8 +133,8 @@
                     <h3 class="text-base font-bold text-slate-800">Total des précipitations (mm)</h3>
                 </div>
                 <div>
-                     <span class="text-2xl font-black text-slate-800 tracking-tight leading-none" id="kpi-precip-total">--</span>
-                     <span class="text-xs font-bold text-slate-400 ml-1 uppercase">mm total</span>
+                    <span class="text-2xl font-black text-slate-800 tracking-tight leading-none" id="kpi-precip-total">--</span>
+                    <span class="text-xs font-bold text-slate-400 ml-1 uppercase">mm total</span>
                 </div>
             </div>
             <div class="flex-1 relative min-h-0 w-full">

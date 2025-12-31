@@ -1,130 +1,204 @@
 document.addEventListener("DOMContentLoaded", () => {
-  // === Data Generation Logic (Monthly for Single Year) ===
-
-  // Helper: Generate 12 months of data based on a Yearly Average + Seasonal Pattern + Noise
-  const generateMonthlyData = (year, type, stationOffset = 0) => {
-    const months = 12;
-    const data = [];
-    const baseYearMod = (year - 1950) * 0.03; // Long term trend factor
-
-    for (let m = 0; m < months; m++) {
-      let val = 0;
-      const noise = Math.random() - 0.5;
-
-      if (type === "tempMax") {
-        // Seasonal: hotter in July-Sept (Guadeloupe: roughly consistent but hotter in wet season)
-        // Guadeloupe Seasonality: Carême (Dry/Cooler: Jan-Jun), Hivernage (Wet/Hotter: Jul-Dec)
-        const season = Math.sin(((m - 4) / 12) * Math.PI * 2);
-        val = 29 + baseYearMod + season * 1.5 + noise + stationOffset;
-      } else if (type === "tempMin") {
-        const season = Math.sin(((m - 4) / 12) * Math.PI * 2);
-        val = 23 + baseYearMod + season * 1.2 + noise + stationOffset;
-      } else if (type === "rain") {
-        // Wet season (Jul-Nov) has peaks
-        // Dry season (Feb-Apr) is low
-        const isWetSeason = m >= 6 && m <= 10;
-        let baseRain = isWetSeason ? 200 : 80;
-        // Trend: slightly drying over years
-        let dryTrend = (year - 1950) * -0.5;
-        val = Math.max(
-          0,
-          baseRain + dryTrend + noise * 50 + stationOffset * 20
-        );
-      } else if (type === "sun") {
-        // Inverse of rain roughly
-        val =
-          200 -
-          (data[m] && data[m].rain ? data[m].rain * 0.2 : 0) +
-          noise * 10 +
-          stationOffset;
-        val = Math.max(100, Math.min(300, 200 + noise * 30)); // Simplified hours/radiation mod
-      }
-
-      data.push(parseFloat(val.toFixed(1)));
-    }
-    return data;
-  };
-
-  // Station Config
-  const stationOffsets = {
-    global: { temp: 0, rain: 0 },
-    "basse-terre": { temp: -1.5, rain: 3 }, // Mountains: cooler, wetter
-    "grande-terre": { temp: 0.5, rain: -1 }, // Flat: warmer, drier
-    "marie-galante": { temp: 0.2, rain: 0 },
-    "les-saintes": { temp: 0.8, rain: -2 },
-    "la-desirade": { temp: 1.2, rain: -2.5 },
-  };
-
-  // Month Labels
-  const monthLabels = [
-    "Jan",
-    "Fév",
-    "Mar",
-    "Avr",
-    "Mai",
-    "Juin",
-    "Juil",
-    "Août",
-    "Sep",
-    "Oct",
-    "Nov",
-    "Déc",
-  ];
-
-  // === DOM Elements ===
   const stationSelect = document.getElementById("station-filter");
   const yearSelect = document.getElementById("year-filter");
   const kpiTempAvg = document.getElementById("kpi-temp-avg");
   const kpiPrecipTotal = document.getElementById("kpi-precip-total");
 
-  let tempChart, rainChart, sunChart;
+  // Stockage des données complètes
+  let climateData = {
+    precipitations: {},
+    temperatures: {},
+    rayonnements: {}
+  };
 
-  // === Init Year Options ===
-  const initYears = () => {
-    if (!yearSelect) return;
-    const currentYear = 2023;
-    for (let y = currentYear; y >= 1950; y--) {
+  let tempChart, rainChart, sunChart;
+  const monthLabels = ["Jan", "Fév", "Mar", "Avr", "Mai", "Juin", "Juil", "Août", "Sep", "Oct", "Nov", "Déc"];
+
+  // --- 1. Fetch Data ---
+  const fetchData = async () => {
+    try {
+      const [precipRes, tempRes, sunRes] = await Promise.all([
+        fetch('api/precipitations-api.php'),
+        fetch('api/temperatures-api.php'),
+        fetch('api/rayonnements-api.php')
+      ]);
+
+      if (!precipRes.ok || !tempRes.ok || !sunRes.ok) throw new Error("Erreur API");
+
+      climateData.precipitations = await precipRes.json();
+      climateData.temperatures = await tempRes.json();
+      climateData.rayonnements = await sunRes.json();
+
+      initFilters();
+      updateDashboard();
+
+    } catch (error) {
+      console.error("Erreur fetch:", error);
+    }
+  };
+
+  // --- 2. Init Filters (Zones & Years) ---
+  const initFilters = () => {
+    if (!stationSelect || !yearSelect) return;
+
+    // 2a. Zones
+    const zones = new Set([
+      ...Object.keys(climateData.precipitations),
+      ...Object.keys(climateData.temperatures),
+      ...Object.keys(climateData.rayonnements)
+    ]);
+
+    stationSelect.innerHTML = "";
+    
+    // Ajouter l'option "Moyenne Globale" en premier
+    const globalOpt = document.createElement("option");
+    globalOpt.value = "global";
+    globalOpt.innerText = "Moyenne Globale";
+    stationSelect.appendChild(globalOpt);
+
+    zones.forEach(zone => {
+      const opt = document.createElement("option");
+      opt.value = zone;
+      opt.innerText = zone;
+      stationSelect.appendChild(opt);
+    });
+    
+    // Défaut sur Global
+    stationSelect.value = "global";
+
+    // 2b. Années
+    updateYearFilter();
+
+    stationSelect.addEventListener("change", () => {
+      updateYearFilter();
+      updateDashboard();
+    });
+  };
+
+  const updateYearFilter = () => {
+    const zone = stationSelect.value;
+    let allYears = new Set();
+
+    if (zone === 'global') {
+      // Pour global, on prend toutes les années dispos de toutes les zones
+      const zones = Object.keys(climateData.temperatures); // On se base sur temp par ex
+      zones.forEach(z => {
+         Object.keys(climateData.temperatures[z] || {}).forEach(y => allYears.add(y));
+      });
+    } else {
+      const pYears = Object.keys(climateData.precipitations[zone] || {});
+      const tYears = Object.keys(climateData.temperatures[zone] || {});
+      const sYears = Object.keys(climateData.rayonnements[zone] || {});
+      allYears = new Set([...pYears, ...tYears, ...sYears]);
+    }
+
+    const sortedYears = [...allYears].sort((a, b) => b - a);
+
+    const currentVal = yearSelect.value;
+    yearSelect.innerHTML = "";
+    
+    if (sortedYears.length === 0) {
+      const opt = document.createElement("option");
+      opt.innerText = "Aucune donnée";
+      yearSelect.appendChild(opt);
+      return;
+    }
+
+    sortedYears.forEach(y => {
       const opt = document.createElement("option");
       opt.value = y;
       opt.innerText = y;
       yearSelect.appendChild(opt);
+    });
+
+    if (sortedYears.includes(currentVal)) {
+      yearSelect.value = currentVal;
+    } else {
+      yearSelect.value = sortedYears[0];
     }
   };
-  initYears();
 
-  // === Render Logic ===
+  // --- 3. Render Logic ---
   const updateDashboard = () => {
-    if (!yearSelect || !stationSelect) return;
+    if (!stationSelect || !yearSelect) return;
+    
+    const zone = stationSelect.value;
+    const year = yearSelect.value;
 
-    const year = parseInt(yearSelect.value);
-    const station = stationSelect.value;
-    const offset = stationOffsets[station];
-
-    // Update Header Title
+    // Update Header
     const headerTitle = document.getElementById("header-title-station");
-    if (headerTitle) {
-      // Format station name (e.g., "basse-terre" -> "Basse-Terre")
-      const stationLabel =
-        stationSelect.options[stationSelect.selectedIndex].text;
-      headerTitle.innerText = stationLabel;
+    if (headerTitle) headerTitle.innerText = (zone === 'global') ? 'Guadeloupe (Moyenne)' : zone;
+
+    const tMax = [];
+    const tMin = [];
+    const rain = [];
+    const sun = [];
+
+    // Helper pour calculer la moyenne globale d'un mois
+    const getGlobalVal = (dataType, year, month, key = null) => {
+        let sum = 0;
+        let count = 0;
+        const zones = Object.keys(climateData[dataType]);
+        
+        zones.forEach(z => {
+            const dataYear = climateData[dataType][z]?.[year];
+            if (dataYear && dataYear[month] !== undefined) {
+                let val = dataYear[month];
+                // Si c'est un objet (ex: {TX: 30, TN: 20})
+                if (key && typeof val === 'object' && val !== null) {
+                    val = val[key];
+                }
+                
+                if (val !== null) {
+                    sum += val;
+                    count++;
+                }
+            }
+        });
+        return count > 0 ? (sum / count) : null;
+    };
+
+    for (let m = 1; m <= 12; m++) {
+      if (zone === 'global') {
+          // Calculer les moyennes de toutes les zones
+          tMax.push(getGlobalVal('temperatures', year, m, 'TX'));
+          tMin.push(getGlobalVal('temperatures', year, m, 'TN'));
+          rain.push(getGlobalVal('precipitations', year, m));
+          sun.push(getGlobalVal('rayonnements', year, m));
+      } else {
+          // Zone spécifique
+          const tVal = climateData.temperatures[zone]?.[year]?.[m];
+          if (tVal) {
+            tMax.push(tVal.TX !== null ? tVal.TX : null);
+            tMin.push(tVal.TN !== null ? tVal.TN : null);
+          } else {
+            tMax.push(null);
+            tMin.push(null);
+          }
+          const rVal = climateData.precipitations[zone]?.[year]?.[m];
+          rain.push(rVal !== undefined ? rVal : null);
+          const sVal = climateData.rayonnements[zone]?.[year]?.[m];
+          sun.push(sVal !== undefined ? sVal : null);
+      }
     }
 
-    // Generate Single Year Monthly Data
-    const tMax = generateMonthlyData(year, "tempMax", offset.temp);
-    const tMin = generateMonthlyData(year, "tempMin", offset.temp);
-    const rain = generateMonthlyData(year, "rain", offset.rain);
-    const sun = generateMonthlyData(year, "sun", 0); // Sun less affected by relief in simplified model
+    // KPIs
+    // Moyenne des (Max + Min)/2
+    let sumTemp = 0;
+    let countTemp = 0;
+    for(let i=0; i<12; i++) {
+        if(tMax[i] !== null && tMin[i] !== null) {
+            sumTemp += (tMax[i] + tMin[i]) / 2;
+            countTemp++;
+        }
+    }
+    if (kpiTempAvg) kpiTempAvg.innerText = countTemp ? (sumTemp / countTemp).toFixed(1) : "--";
 
-    // Calculate KPIs
-    const avgMax = tMax.reduce((a, b) => a + b, 0) / 12;
-    const avgMin = tMin.reduce((a, b) => a + b, 0) / 12;
-    const globalAvg = (avgMax + avgMin) / 2;
-    if (kpiTempAvg) kpiTempAvg.innerText = globalAvg.toFixed(1);
+    // Total Pluie
+    let sumRain = 0;
+    rain.forEach(r => { if(r !== null) sumRain += r; });
+    if (kpiPrecipTotal) kpiPrecipTotal.innerText = Math.round(sumRain);
 
-    const totalRain = rain.reduce((a, b) => a + b, 0);
-    if (kpiPrecipTotal) kpiPrecipTotal.innerText = Math.round(totalRain);
-
-    // Update Charts
     updateCharts(monthLabels, tMax, tMin, rain, sun);
   };
 
@@ -134,9 +208,9 @@ document.addEventListener("DOMContentLoaded", () => {
     updateSunGraph(labels, sun);
   };
 
-  // --- Chart Implementations ---
+  // --- Charts ---
 
-  // 1. Temperature (Line with Area)
+  // 1. Temperature (Ancien Style: Remplissage entre Max et Min)
   const updateTempGraph = (labels, max, min) => {
     const ctx = document.getElementById("meteoTempChart");
     if (!ctx) return;
@@ -163,18 +237,18 @@ document.addEventListener("DOMContentLoaded", () => {
               tension: 0.4,
               pointRadius: 0,
               pointHoverRadius: 6,
-              fill: true,
+              fill: "+1", // Remplir vers le dataset suivant (Min)
             },
             {
               label: "Min",
               data: min,
               borderColor: "#fb923c", // orange-400
-              backgroundColor: "rgba(251, 146, 60, 0.05)",
+              backgroundColor: "rgba(251, 146, 60, 0.05)", // Back de secours
               borderWidth: 3,
               tension: 0.4,
               pointRadius: 0,
               pointHoverRadius: 6,
-              fill: true,
+              fill: false, // Déjà rempli par Max
             },
           ],
         },
@@ -187,8 +261,8 @@ document.addEventListener("DOMContentLoaded", () => {
               backgroundColor: "rgba(15, 23, 42, 0.9)",
               padding: 12,
               cornerRadius: 8,
-              titleFont: { size: 13, weight: 600 },
-              bodyFont: { size: 13 },
+              mode: 'index',
+              intersect: false
             },
           },
           scales: {
@@ -207,7 +281,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   };
 
-  // 2. Rain (Rounded Bars)
+  // 2. Rain
   const updateRainGraph = (labels, data) => {
     const ctx = document.getElementById("meteoRainChart");
     if (!ctx) return;
@@ -220,37 +294,29 @@ document.addEventListener("DOMContentLoaded", () => {
         type: "bar",
         data: {
           labels: labels,
-          datasets: [
-            {
-              label: "Précipitations",
-              data: data,
-              backgroundColor: "#3b82f6",
-              borderRadius: 6,
-              maxBarThickness: 60,
-              hoverBackgroundColor: "#2563eb",
-            },
-          ],
+          datasets: [{
+            label: "Précipitations",
+            data: data,
+            backgroundColor: "#3b82f6",
+            borderRadius: 6,
+            maxBarThickness: 60,
+            hoverBackgroundColor: "#2563eb",
+          }]
         },
         options: {
           responsive: true,
           maintainAspectRatio: false,
           plugins: { legend: { display: false } },
           scales: {
-            x: {
-              grid: { display: false },
-              border: { display: false },
-            },
-            y: {
-              grid: { color: "#f1f5f9", borderDash: [4, 4] },
-              border: { display: false },
-            },
-          },
-        },
+            x: { grid: { display: false }, border: { display: false } },
+            y: { grid: { color: "#f1f5f9", borderDash: [4, 4] }, border: { display: false } }
+          }
+        }
       });
     }
   };
 
-  // 3. Sun (Minimalist Sparkline)
+  // 3. Sun
   const updateSunGraph = (labels, data) => {
     const ctx = document.getElementById("meteoSunChart");
     if (!ctx) return;
@@ -263,72 +329,45 @@ document.addEventListener("DOMContentLoaded", () => {
         type: "line",
         data: {
           labels: labels,
-          datasets: [
-            {
-              label: "Ensoleillement",
-              data: data,
-              borderColor: "#f97316", // Orange
-              borderWidth: 2,
-              tension: 0.4,
-              pointRadius: 0,
-              pointHoverRadius: 4,
-              fill: false,
-            },
-          ],
+          datasets: [{
+            label: "Ensoleillement",
+            data: data,
+            borderColor: "#f97316",
+            borderWidth: 2,
+            tension: 0.4,
+            pointRadius: 0,
+            pointHoverRadius: 4,
+            fill: false
+          }]
         },
         options: {
           responsive: true,
           maintainAspectRatio: false,
-          plugins: {
-            legend: { display: false },
-            tooltip: {
-              backgroundColor: "rgba(15, 23, 42, 0.9)",
-              padding: 12,
-              cornerRadius: 8,
-              titleFont: { size: 13, weight: 600 },
-              bodyFont: { size: 13 },
-              callbacks: {
-                label: function (context) {
-                  return context.parsed.y + " MJ/m²";
-                },
-              },
-            },
-          },
+          plugins: { legend: { display: false } },
           scales: {
-            x: {
-              display: true, // Show X Axis
-              grid: { display: false },
-              ticks: { display: true, font: { size: 10 } },
-            },
-            y: {
-              display: true, // Show Y Axis
-              grid: { color: "#f1f5f9", borderDash: [4, 4] },
-              border: { display: false },
-              ticks: { font: { size: 10 } },
-            },
-          },
-          // Remove layout padding to use full space
-        },
+            x: { display: true, grid: { display: false }, ticks: { font: { size: 10 } } },
+            y: { display: true, grid: { color: "#f1f5f9", borderDash: [4, 4] }, border: { display: false }, ticks: { font: { size: 10 } } }
+          }
+        }
       });
     }
   };
 
-  // === Listeners ===
-  if (stationSelect) stationSelect.addEventListener("change", updateDashboard);
+  // Init Listener for year change
   if (yearSelect) yearSelect.addEventListener("change", updateDashboard);
-
+  
+  // Refresh button
   const refreshBtn = document.getElementById("refresh-btn");
   if (refreshBtn) {
     refreshBtn.addEventListener("click", () => {
       const icon = refreshBtn.querySelector("i");
       if (icon) icon.classList.add("animate-spin");
-      setTimeout(() => {
+      fetchData().then(() => {
         if (icon) icon.classList.remove("animate-spin");
-      }, 600);
-      updateDashboard();
+      });
     });
   }
 
-  // Initial Load
-  setTimeout(updateDashboard, 100);
+  // Start
+  fetchData();
 });
