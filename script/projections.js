@@ -19,7 +19,7 @@ document.addEventListener("DOMContentLoaded", () => {
     return gradient;
   };
 
-  // Données basées sur ARPEGE-Climat C3AF / RCP 8.5
+  // Données basées sur ARPEGE-Climat C3AF / RCP 8.5s
   const labels = ["2031-2055", "2056-2080", "Horizon 2080"];
   const tempDayData = [1.0, 2.0, 3.0];
   const tempNightData = [1.5, 3.0, 3.5];
@@ -83,7 +83,8 @@ document.addEventListener("DOMContentLoaded", () => {
           padding: 16,
           cornerRadius: 12,
           callbacks: {
-            label: (context) => ` ${context.dataset.label}: +${context.parsed.r}°C`,
+            label: (context) =>
+              ` ${context.dataset.label}: +${context.parsed.r}°C`,
           },
         },
       },
@@ -94,7 +95,7 @@ document.addEventListener("DOMContentLoaded", () => {
           pointLabels: {
             font: { family: fontStack, size: 11, weight: "bold" },
             color: "#475569",
-            backdropColor: "transparent", 
+            backdropColor: "transparent",
           },
           ticks: {
             backdropColor: "transparent",
@@ -111,7 +112,7 @@ document.addEventListener("DOMContentLoaded", () => {
     },
   };
 
-  // --- NOUVEAU TYPE : DIVERGING BAR CHART pour Précipitations/Canicules ---
+  // --- NOUVEAU TYPE : VERTICAL BAR CHART pour Précipitations/Canicules ---
   const precipChartConfig = {
     type: "bar",
     data: {
@@ -121,22 +122,20 @@ document.addEventListener("DOMContentLoaded", () => {
           label: "Précipitations",
           data: precipData,
           backgroundColor: "rgba(59, 130, 246, 0.8)",
-          borderRadius: { topLeft: 4, bottomLeft: 4 }, // Arrondi côté extérieur gauche
+          borderRadius: 4,
           borderSkipped: false,
-          stack: "Stack 0",
         },
         {
           label: "Intensité Canicules",
           data: heatwaveData,
           backgroundColor: "rgba(249, 115, 22, 0.8)",
-          borderRadius: { topRight: 4, bottomRight: 4 }, // Arrondi côté extérieur droit
+          borderRadius: 4,
           borderSkipped: false,
-          stack: "Stack 0",
         },
       ],
     },
     options: {
-      indexAxis: "y", // Rotation pour barres horizontales
+      // indexAxis: "y", // REMOVED for vertical bars
       responsive: true,
       maintainAspectRatio: false,
       plugins: {
@@ -157,7 +156,7 @@ document.addEventListener("DOMContentLoaded", () => {
           cornerRadius: 12,
           callbacks: {
             label: (context) => {
-              const val = context.parsed.x;
+              const val = context.parsed.y;
               const label = context.dataset.label;
               const suffix = val < 0 ? "% (Baisse)" : "% (Hausse Index)";
               return ` ${label}: ${val > 0 ? "+" : ""}${val}${suffix}`;
@@ -167,25 +166,34 @@ document.addEventListener("DOMContentLoaded", () => {
       },
       scales: {
         x: {
+          grid: { display: false },
+          ticks: {
+            font: { family: fontStack, weight: "bold" },
+            color: "#475569",
+          },
+        },
+        y: {
           type: "linear",
-          position: "bottom",
+          position: "left",
           title: {
             display: true,
             text: "Déficit Hydrique (%)  vs  Intensité Canicules (%)",
             color: "#64748b",
-            font: { family: fontStack, size: 10, weight: "bold", textTransform: "uppercase" },
+            font: {
+              family: fontStack,
+              size: 10,
+              weight: "bold",
+              textTransform: "uppercase",
+            },
           },
           grid: {
-            color: (ctx) => (ctx.tick.value === 0 ? "#334155" : "rgba(241, 245, 249, 1)"), // Ligne zéro plus foncée
+            color: (ctx) =>
+              ctx.tick.value === 0 ? "#334155" : "rgba(241, 245, 249, 1)",
             lineWidth: (ctx) => (ctx.tick.value === 0 ? 2 : 1),
           },
           ticks: { font: { family: fontStack }, color: "#64748b" },
-          min: -30, // Un peu plus d'espace à gauche
+          min: -30,
           max: 100,
-        },
-        y: {
-          grid: { display: false },
-          ticks: { font: { family: fontStack, weight: "bold" }, color: "#475569" },
         },
       },
       animation: { duration: 2000, easing: "easeOutQuart" },
@@ -215,8 +223,22 @@ document.addEventListener("DOMContentLoaded", () => {
     if (hasAnimated) return;
     const tl = gsap.timeline();
     tl.to(titleLine, { y: 0, opacity: 1, duration: 1, ease: "power4.out" })
-      .to(separator, { width: "6rem", duration: 0.8, ease: "power2.out" }, "-=0.5")
-      .to(chartContainers, { scale: 1, opacity: 1, duration: 1, stagger: 0.2, ease: "back.out(1.2)" }, "-=0.3")
+      .to(
+        separator,
+        { width: "6rem", duration: 0.8, ease: "power2.out" },
+        "-=0.5"
+      )
+      .to(
+        chartContainers,
+        {
+          scale: 1,
+          opacity: 1,
+          duration: 1,
+          stagger: 0.2,
+          ease: "back.out(1.2)",
+        },
+        "-=0.3"
+      )
       .to(legend, { opacity: 1, y: 0, duration: 0.8 }, "-=0.5");
     hasAnimated = true;
   }
@@ -225,7 +247,10 @@ document.addEventListener("DOMContentLoaded", () => {
 
   const observer = new MutationObserver((mutations) => {
     mutations.forEach((mutation) => {
-      if (mutation.type === "attributes" && mutation.attributeName === "class") {
+      if (
+        mutation.type === "attributes" &&
+        mutation.attributeName === "class"
+      ) {
         if (section.classList.contains("active")) {
           if (!hasAnimated) setTimeout(animateIn, 100);
           if (!hasShownModal) {
@@ -241,7 +266,10 @@ document.addEventListener("DOMContentLoaded", () => {
 
   observer.observe(section, { attributes: true });
 
-  if (section.classList.contains("active") || getComputedStyle(section).display !== "none") {
+  if (
+    section.classList.contains("active") ||
+    getComputedStyle(section).display !== "none"
+  ) {
     if (!hasAnimated) setTimeout(animateIn, 100);
     if (!hasShownModal) {
       setTimeout(() => {
@@ -276,11 +304,13 @@ document.addEventListener("DOMContentLoaded", () => {
   if (openModalBtn) openModalBtn.addEventListener("click", openModal);
   if (closeModalBtn) closeModalBtn.addEventListener("click", closeModal);
   if (closeModalBtn2) closeModalBtn2.addEventListener("click", closeModal);
-  if (modal) modal.addEventListener("click", (e) => { if (e.target === modal) closeModal(); });
+  if (modal)
+    modal.addEventListener("click", (e) => {
+      if (e.target === modal) closeModal();
+    });
 
   window.addEventListener("resize", () => {
     if (tempChart) tempChart.resize();
     if (precipChart) precipChart.resize();
   });
 });
-

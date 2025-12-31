@@ -10,7 +10,7 @@ declare(strict_types=1);
             <!-- Titles -->
             <div>
                 <h1 class="text-7xl font-normal tracking-tighter text-slate-900 mb-1">
-                    Émissions
+                    Émissions de CO2
                 </h1>
                 <div class="flex items-center gap-2 text-slate-400">
                     <i data-lucide="map-pin" class="w-4 h-4"></i>
@@ -21,17 +21,11 @@ declare(strict_types=1);
                     <span class="text-sm font-medium text-slate-500">1990 - 2022</span>
                 </div>
             </div>
-
-            <!-- Actions -->
-            <button id="open-emissions-info" class="flex items-center gap-2 px-4 py-2 bg-white border border-slate-200 rounded-full text-slate-600 hover:text-slate-900 hover:border-slate-300 transition-all shadow-sm">
-                <i data-lucide="info" class="w-4 h-4"></i>
-                <span class="text-sm font-bold">Détails des secteurs</span>
-            </button>
         </div>
     </div>
 
     <!-- Dashboard Content (Fluid) -->
-    <div class="flex-1 p-6 pb-12 overflow-hidden flex flex-col gap-6 h-full">
+    <div class="flex-1 p-6 pb-16 overflow-hidden flex flex-col gap-12 h-full">
         
         <!-- Main Chart Card -->
         <div class="emissions-chart-container flex-1 bg-white rounded-[20px] p-6 shadow-[0_2px_20px_rgba(0,0,0,0.02)] border border-slate-100/50 flex flex-col min-h-0 opacity-0 transform scale-95 relative">

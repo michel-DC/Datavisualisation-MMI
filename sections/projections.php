@@ -10,7 +10,7 @@ declare(strict_types=1);
             <!-- Titles -->
             <div>
                 <h1 class="text-7xl font-normal tracking-tighter text-slate-900 mb-1">
-                    Projections
+                    Projections climatiques
                 </h1>
                 <div class="flex items-center gap-2 text-slate-400">
                     <i data-lucide="map-pin" class="w-4 h-4"></i>
@@ -21,21 +21,15 @@ declare(strict_types=1);
                     <span class="text-sm font-medium text-slate-500">Horizon 2080</span>
                 </div>
             </div>
-
-            <!-- Actions -->
-            <button id="open-proj-info" class="flex items-center gap-2 px-4 py-2 bg-white border border-slate-200 rounded-full text-slate-600 hover:text-slate-900 hover:border-slate-300 transition-all shadow-sm">
-                <i data-lucide="info" class="w-4 h-4"></i>
-                <span class="text-sm font-bold">Comprendre les modèles</span>
-            </button>
         </div>
     </div>
 
     <!-- Dashboard Content (Fluid) -->
     <div class="flex-1 p-6 pb-12 overflow-hidden flex flex-col gap-6 h-full">
         
-        <div class="flex-1 w-full grid grid-cols-1 lg:grid-cols-2 gap-6 min-h-0">
+        <div class="flex-1 w-full flex flex-col gap-6 min-h-0">
             <!-- Temperature Radar Chart -->
-            <div class="proj-chart-container opacity-0 transform scale-95 flex flex-col bg-white rounded-[20px] p-6 shadow-[0_2px_20px_rgba(0,0,0,0.02)] border border-slate-100/50">
+            <div class="proj-chart-container flex-1 min-h-0 opacity-0 transform scale-95 flex flex-col bg-white rounded-[20px] p-6 shadow-[0_2px_20px_rgba(0,0,0,0.02)] border border-slate-100/50">
                 <div class="flex-none flex items-center justify-between mb-6">
                     <div>
                         <h3 class="text-xl font-bold text-slate-800">Hausse des Températures</h3>
@@ -58,7 +52,7 @@ declare(strict_types=1);
             </div>
 
             <!-- Precipitation & Heatwave Chart -->
-            <div class="proj-chart-container opacity-0 transform scale-95 flex flex-col bg-white rounded-[20px] p-6 shadow-[0_2px_20px_rgba(0,0,0,0.02)] border border-slate-100/50">
+            <div class="proj-chart-container flex-1 min-h-0 opacity-0 transform scale-95 flex flex-col bg-white rounded-[20px] p-6 shadow-[0_2px_20px_rgba(0,0,0,0.02)] border border-slate-100/50">
                 <div class="flex-none flex items-center justify-between mb-6">
                     <div>
                         <h3 class="text-xl font-bold text-slate-800">Climat & Phénomènes</h3>

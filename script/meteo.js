@@ -119,10 +119,10 @@ document.addEventListener("DOMContentLoaded", () => {
     const avgMax = tMax.reduce((a, b) => a + b, 0) / 12;
     const avgMin = tMin.reduce((a, b) => a + b, 0) / 12;
     const globalAvg = (avgMax + avgMin) / 2;
-    kpiTempAvg.innerText = globalAvg.toFixed(1);
+    if (kpiTempAvg) kpiTempAvg.innerText = globalAvg.toFixed(1);
 
     const totalRain = rain.reduce((a, b) => a + b, 0);
-    kpiPrecipTotal.innerText = Math.round(totalRain);
+    if (kpiPrecipTotal) kpiPrecipTotal.innerText = Math.round(totalRain);
 
     // Update Charts
     updateCharts(monthLabels, tMax, tMin, rain, sun);
@@ -157,8 +157,8 @@ document.addEventListener("DOMContentLoaded", () => {
             {
               label: "Max",
               data: max,
-              borderColor: "#ec4899", // rose-500
-              backgroundColor: "rgba(236, 72, 153, 0.1)",
+              borderColor: "#ea580c", // orange-600
+              backgroundColor: "rgba(234, 88, 12, 0.1)",
               borderWidth: 3,
               tension: 0.4,
               pointRadius: 0,
@@ -168,8 +168,8 @@ document.addEventListener("DOMContentLoaded", () => {
             {
               label: "Min",
               data: min,
-              borderColor: "#3b82f6", // blue-500
-              backgroundColor: "rgba(59, 130, 246, 0.05)",
+              borderColor: "#fb923c", // orange-400
+              backgroundColor: "rgba(251, 146, 60, 0.05)",
               borderWidth: 3,
               tension: 0.4,
               pointRadius: 0,
@@ -267,7 +267,7 @@ document.addEventListener("DOMContentLoaded", () => {
             {
               label: "Ensoleillement",
               data: data,
-              borderColor: "#f59e0b",
+              borderColor: "#f97316", // Orange
               borderWidth: 2,
               tension: 0.4,
               pointRadius: 0,
@@ -316,6 +316,18 @@ document.addEventListener("DOMContentLoaded", () => {
   // === Listeners ===
   if (stationSelect) stationSelect.addEventListener("change", updateDashboard);
   if (yearSelect) yearSelect.addEventListener("change", updateDashboard);
+
+  const refreshBtn = document.getElementById("refresh-btn");
+  if (refreshBtn) {
+    refreshBtn.addEventListener("click", () => {
+      const icon = refreshBtn.querySelector("i");
+      if (icon) icon.classList.add("animate-spin");
+      setTimeout(() => {
+        if (icon) icon.classList.remove("animate-spin");
+      }, 600);
+      updateDashboard();
+    });
+  }
 
   // Initial Load
   setTimeout(updateDashboard, 100);
