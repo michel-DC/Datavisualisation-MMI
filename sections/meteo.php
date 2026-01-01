@@ -1,143 +1,98 @@
 <?php
-
 declare(strict_types=1); ?>
-<section id="section-meteo" data-custom-anim="true" class="section absolute inset-0 w-full h-full bg-[#f8fafc] text-slate-900 overflow-hidden font-sans flex flex-col">
+<section id="section-meteo" data-custom-anim="true" class="section absolute inset-0 w-full h-full bg-white text-[#1a1a1a] overflow-hidden flex flex-col p-12">
 
-    <!-- Minimalist Header & Controls (Fixed Height) -->
-    <!-- Minimalist Header & Controls (Fixed Height) -->
-    <div class="flex-none bg-[#f8fafc]/90 backdrop-blur-md px-8 pt-8 pb-4 flex flex-col gap-4 z-10">
-
-        <!-- Titles -->
+    <!-- Header -->
+    <div class="flex-none flex items-end justify-between mb-8 border-b border-gray-100 pb-8">
         <div>
-            <h1 class="text-7xl font-normal tracking-tighter text-slate-900 mb-1">
-                Météo dashboard
-            </h1>
-            <div class="flex items-center gap-2 text-slate-400">
-                <i data-lucide="map-pin" class="w-4 h-4"></i>
-                <span class="text-sm font-bold uppercase tracking-widest">
-                    Guadeloupe
-                </span>
-            </div>
+            <h2 class="text-sm font-bold text-gray-400 uppercase tracking-widest mb-2">Données en temps réel</h2>
+            <h1 class="text-5xl font-medium tracking-tight">Météo Dashboard</h1>
         </div>
 
-        <!-- Controls (Left Aligned) -->
-        <div class="flex items-end gap-3 mt-2">
-            <!-- Station Select -->
-            <div class="flex flex-col gap-1.5">
-                <label for="station-filter" class="text-[11px] font-bold text-slate-400 uppercase tracking-wider ml-1">Zone</label>
-                <div class="relative group">
-                    <i data-lucide="map-pin" class="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400 group-hover:text-slate-600 transition-colors pointer-events-none z-10"></i>
-                    <select id="station-filter" class="pl-9 pr-8 py-2 bg-white border border-slate-200 rounded-lg text-sm font-semibold text-slate-600 focus:outline-none focus:ring-1 focus:ring-slate-300 shadow-sm hover:border-slate-300 transition-all cursor-pointer appearance-none min-w-[140px]">
-                        <option value="global">Moyenne Globale</option>
-                        <option value="basse-terre">Basse-Terre</option>
-                        <option value="grande-terre">Grande-Terre</option>
-                        <option value="marie-galante">Marie-Galante</option>
-                        <option value="les-saintes">Les Saintes</option>
-                        <option value="la-desirade">La Désirade</option>
-                    </select>
-                    <div class="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none">
-                        <i data-lucide="chevron-down" class="h-3 w-3 text-slate-400"></i>
-                    </div>
-                </div>
+        <!-- Controls -->
+        <div class="flex items-center gap-4">
+            
+            <!-- Zone Select -->
+            <div class="relative group">
+                <select id="station-filter" class="appearance-none bg-transparent border-b border-gray-300 py-2 pr-8 pl-2 text-sm font-medium text-black focus:outline-none focus:border-black transition-colors cursor-pointer min-w-[140px]">
+                    <option value="global">Moyenne Globale</option>
+                    <option value="basse-terre">Basse-Terre</option>
+                    <option value="grande-terre">Grande-Terre</option>
+                    <option value="marie-galante">Marie-Galante</option>
+                    <option value="les-saintes">Les Saintes</option>
+                    <option value="la-desirade">La Désirade</option>
+                </select>
+                <i data-lucide="chevron-down" class="absolute right-0 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none"></i>
             </div>
 
             <!-- Year Select -->
-            <div class="flex flex-col gap-1.5">
-                <label for="year-filter" class="text-[11px] font-bold text-slate-400 uppercase tracking-wider ml-1">Année</label>
-                <div class="relative group">
-                    <i data-lucide="calendar" class="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400 group-hover:text-slate-600 transition-colors pointer-events-none z-10"></i>
-                    <select id="year-filter" class="pl-9 pr-8 py-2 bg-white border border-slate-200 rounded-lg text-sm font-semibold text-slate-600 focus:outline-none focus:ring-1 focus:ring-slate-300 shadow-sm hover:border-slate-300 transition-all cursor-pointer appearance-none min-w-[100px]">
-                        <!-- JS populated -->
-                    </select>
-                    <div class="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none">
-                        <i data-lucide="chevron-down" class="h-3 w-3 text-slate-400"></i>
-                    </div>
-                </div>
+            <div class="relative group">
+                <select id="year-filter" class="appearance-none bg-transparent border-b border-gray-300 py-2 pr-8 pl-2 text-sm font-medium text-black focus:outline-none focus:border-black transition-colors cursor-pointer min-w-[100px]">
+                    <!-- JS populated -->
+                </select>
+                <i data-lucide="chevron-down" class="absolute right-0 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none"></i>
             </div>
 
-            <!-- Refresh Button -->
-            <button id="refresh-btn" class="flex items-center gap-2 bg-blue-500 hover:bg-blue-600 text-white px-4 py-2.5 rounded-lg text-sm font-semibold transition-all shadow-md active:scale-95 h-[42px]">
+            <button id="refresh-btn" class="ml-4 w-10 h-10 rounded-full border border-gray-200 flex items-center justify-center hover:bg-black hover:text-white hover:border-black transition-all duration-300">
                 <i data-lucide="refresh-cw" class="w-4 h-4"></i>
-                Actualiser
             </button>
         </div>
     </div>
 
-    <!-- Dashboard Content (Fluid) -->
-    <div class="flex-1 p-6 overflow-hidden flex flex-col gap-4 max-h-screen">
+    <!-- Content Grid -->
+    <div class="flex-1 grid grid-cols-12 gap-6 min-h-0">
 
-        <!-- Top Row (Flex ~30% Forced) -->
-        <div class="flex-none flex gap-4" style="height: 50%;">
-
-            <!-- Temperature Chart (Main) -->
-            <div class="flex-1 bg-white rounded-[20px] p-6 shadow-[0_2px_20px_rgba(0,0,0,0.02)] border border-slate-100/50 flex flex-col">
-                <div class="flex-none flex items-center gap-4 mb-6">
-                    <div class="w-10 h-10 rounded-full bg-orange-500/10 flex items-center justify-center text-orange-500">
-                        <i data-lucide="thermometer" class="w-5 h-5"></i>
-                    </div>
-                    <div>
-                        <h3 class="text-base font-bold text-slate-800">Température moyenne (°C)</h3>
-                    </div>
+        <!-- Main Temp Chart -->
+        <div class="col-span-8 flex flex-col bg-[#fafafa] rounded-xl border border-gray-100 p-6 relative">
+            <div class="flex items-center justify-between mb-4">
+                <h3 class="text-lg font-medium">Températures</h3>
+                <div class="flex items-center gap-2">
+                    <span class="w-2 h-2 rounded-full bg-orange-400"></span>
+                    <span class="text-xs text-gray-500 uppercase">Moyenne (°C)</span>
                 </div>
-                <div class="flex-1 relative min-h-0 w-full">
-                    <canvas id="meteoTempChart"></canvas>
+            </div>
+            <div class="flex-1 w-full relative min-h-0">
+                <canvas id="meteoTempChart"></canvas>
+            </div>
+        </div>
+
+        <!-- KPI Column -->
+        <div class="col-span-4 flex flex-col gap-6">
+            
+            <!-- KPI Box -->
+            <div class="flex-1 bg-white rounded-xl border border-gray-100 p-6 flex flex-col justify-center items-center text-center group hover:border-black transition-colors duration-500">
+                <span class="text-xs font-bold text-gray-400 uppercase tracking-wider mb-2">Température Moyenne</span>
+                <div class="flex items-start justify-center gap-1">
+                    <span class="text-6xl font-light tracking-tighter" id="kpi-temp-avg">--</span>
+                    <span class="text-xl text-gray-400 mt-2">°C</span>
                 </div>
             </div>
 
-            <!-- Side Column (KPI + Sun) -->
-            <div class="w-[30%] flex flex-col gap-4">
-                <!-- KPI -->
-                <div class="flex-1 bg-white rounded-[20px] p-6 shadow-[0_2px_20px_rgba(0,0,0,0.02)] border border-slate-100/50 flex flex-col justify-between">
-                    <div>
-                        <div class="flex items-center gap-2 mb-2">
-                            <div class="w-8 h-8 rounded-full bg-orange-500/10 flex items-center justify-center text-orange-500">
-                                <i data-lucide="thermometer" class="w-4 h-4"></i>
-                            </div>
-                            <span class="text-[10px] font-bold uppercase tracking-wider text-slate-400">Moyenne</span>
-                        </div>
-                        <div class="flex items-end gap-1">
-                            <span class="text-5xl lg:text-6xl font-black tracking-tighter leading-none text-slate-900" id="kpi-temp-avg">--</span>
-                            <span class="text-xl font-medium text-slate-400 mb-1">°C</span>
-                        </div>
-                    </div>
-                    <!-- <div class="pt-4 border-t border-slate-100">
-                         <div class="flex items-center justify-between">
-                              <span class="text-xs font-medium text-slate-500">Écart vs Ref</span>
-                              <span class="text-xs font-bold text-emerald-600 bg-emerald-100 px-2 py-0.5 rounded">+1.8°C</span>
-                         </div>
-                    </div> -->
+            <!-- Sun Chart -->
+            <div class="h-[45%] bg-white rounded-xl border border-gray-100 p-6 flex flex-col relative group hover:border-black transition-colors duration-500">
+                <div class="flex items-center gap-2 mb-2">
+                    <i data-lucide="sun" class="w-4 h-4 text-gray-400"></i>
+                    <h3 class="text-sm font-bold uppercase tracking-wider text-gray-500">Ensoleillement</h3>
                 </div>
-
-                <!-- Sun -->
-                <div class="h-[45%] bg-white rounded-[20px] p-5 shadow-[0_2px_20px_rgba(0,0,0,0.02)] border border-slate-100/50 flex flex-col">
-                    <div class="flex-none flex items-center gap-3 mb-2">
-                        <div class="w-8 h-8 rounded-full bg-orange-500/10 flex items-center justify-center text-orange-500">
-                            <i data-lucide="sun" class="w-4 h-4"></i>
-                        </div>
-                        <h3 class="text-sm font-bold text-slate-800">Ensoleillement</h3>
-                    </div>
-                    <div class="flex-1 relative min-h-0 w-full">
-                        <canvas id="meteoSunChart"></canvas>
-                    </div>
+                <div class="flex-1 w-full relative min-h-0">
+                    <canvas id="meteoSunChart"></canvas>
                 </div>
             </div>
         </div>
 
-        <!-- Bottom Row (Flex Remaining) -->
-        <div class="flex-1 flex flex-col pb-6 bg-white rounded-[20px] p-6 shadow-[0_2px_20px_rgba(0,0,0,0.02)] border border-slate-100/50">
-            <div class="flex-none flex items-center justify-between mb-4">
-                <div class="flex items-center gap-4">
-                    <div class="w-10 h-10 rounded-full bg-blue-500/10 flex items-center justify-center text-blue-500">
-                        <i data-lucide="cloud-rain" class="w-5 h-5"></i>
-                    </div>
-                    <h3 class="text-base font-bold text-slate-800">Total des précipitations (mm)</h3>
+        <!-- Bottom Rain Chart (Full Width) -->
+        <div class="col-span-12 h-[35%] bg-white rounded-xl border border-gray-100 p-6 flex flex-col relative hover:border-black transition-colors duration-500">
+            <div class="flex items-center justify-between mb-2">
+                <div class="flex items-center gap-2">
+                    <i data-lucide="cloud-rain" class="w-4 h-4 text-gray-400"></i>
+                    <h3 class="text-lg font-medium">Précipitations</h3>
                 </div>
-                <div>
-                    <span class="text-2xl font-black text-slate-800 tracking-tight leading-none" id="kpi-precip-total">--</span>
-                    <span class="text-xs font-bold text-slate-400 ml-1 uppercase">mm total</span>
+                <div class="flex items-end gap-1">
+                    <span class="text-2xl font-light" id="kpi-precip-total">--</span>
+                    <span class="text-xs font-bold text-gray-400 uppercase mb-1">mm total</span>
                 </div>
             </div>
-            <div class="flex-1 relative min-h-0 w-full">
+            <div class="flex-1 w-full relative min-h-0">
                 <canvas id="meteoRainChart"></canvas>
             </div>
         </div>
