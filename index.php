@@ -10,7 +10,7 @@ declare(strict_types=1); ?>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Le changement climatique en Guadeloupe</title>
-    <link rel="shortcut icon" href="assets/favicon/soleil.gif" type="image/x-icon">
+    <link rel="shortcut icon" href="assets/favicon/drapeau.svg" type="image/x-icon">
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="/styles/index.css">
 
@@ -32,7 +32,7 @@ declare(strict_types=1); ?>
 
     <script src="https://unpkg.com/lucide@latest"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    
+
     <!-- Scripts -->
     <script src="/script/sidebar.js"></script>
     <script src="/script/meteo.js"></script>
