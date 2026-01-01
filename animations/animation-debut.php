@@ -1,6 +1,6 @@
 <style>
     .climate-gradient {
-        background: #0f5132;
+        background: #1E1E1E;
         background-size: 400% 400%;
         animation: climateShift 12s ease infinite;
     }

@@ -39,50 +39,52 @@ declare(strict_types=1); ?>
         </div>
     </div>
 
-    <!-- Content Grid -->
-    <div class="flex-1 grid grid-cols-12 gap-6 min-h-0">
+    <!-- Content Area (Vertical Flex) -->
+    <div class="flex-1 flex flex-col gap-6 min-h-0">
 
-        <!-- Main Temp Chart -->
-        <div class="col-span-8 flex flex-col bg-[#fafafa] rounded-xl border border-gray-100 p-6 relative">
-            <div class="flex items-center justify-between mb-4">
-                <h3 class="text-lg font-medium">Températures</h3>
-                <div class="flex items-center gap-2">
-                    <span class="w-2 h-2 rounded-full bg-orange-400"></span>
-                    <span class="text-xs text-gray-500 uppercase">Moyenne (°C)</span>
-                </div>
-            </div>
-            <div class="flex-1 w-full relative min-h-0">
-                <canvas id="meteoTempChart"></canvas>
-            </div>
-        </div>
-
-        <!-- KPI Column -->
-        <div class="col-span-4 flex flex-col gap-6">
-            
-            <!-- KPI Box -->
-            <div class="flex-1 bg-white rounded-xl border border-gray-100 p-6 flex flex-col justify-center items-center text-center group hover:border-black transition-colors duration-500">
-                <span class="text-xs font-bold text-gray-400 uppercase tracking-wider mb-2">Température Moyenne</span>
-                <div class="flex items-start justify-center gap-1">
-                    <span class="text-6xl font-light tracking-tighter" id="kpi-temp-avg">--</span>
-                    <span class="text-xl text-gray-400 mt-2">°C</span>
-                </div>
-            </div>
-
-            <!-- Sun Chart -->
-            <div class="h-[45%] bg-white rounded-xl border border-gray-100 p-6 flex flex-col relative group hover:border-black transition-colors duration-500">
-                <div class="flex items-center gap-2 mb-2">
-                    <i data-lucide="sun" class="w-4 h-4 text-gray-400"></i>
-                    <h3 class="text-sm font-bold uppercase tracking-wider text-gray-500">Ensoleillement</h3>
+        <!-- Top Row: Temp & KPI (Flex Grow) -->
+        <div class="flex-[1.6] grid grid-cols-12 gap-6 min-h-0">
+            <!-- Main Temp Chart -->
+            <div class="col-span-8 flex flex-col bg-[#fafafa] rounded-xl border border-gray-100 p-6 relative overflow-hidden">
+                <div class="flex items-center justify-between mb-4 flex-none">
+                    <h3 class="text-lg font-medium">Températures</h3>
+                    <div class="flex items-center gap-2">
+                        <span class="w-2 h-2 rounded-full bg-orange-400"></span>
+                        <span class="text-xs text-gray-500 uppercase">Moyenne (°C)</span>
+                    </div>
                 </div>
                 <div class="flex-1 w-full relative min-h-0">
-                    <canvas id="meteoSunChart"></canvas>
+                    <canvas id="meteoTempChart"></canvas>
+                </div>
+            </div>
+
+            <!-- KPI Column -->
+            <div class="col-span-4 flex flex-col gap-6 min-h-0">
+                <!-- KPI Box -->
+                <div class="flex-1 bg-white rounded-xl border border-gray-100 p-6 flex flex-col justify-center items-center text-center group hover:border-black transition-colors duration-500">
+                    <span class="text-xs font-bold text-gray-400 uppercase tracking-wider mb-2">Température Moyenne</span>
+                    <div class="flex items-start justify-center gap-1">
+                        <span class="text-6xl font-light tracking-tighter" id="kpi-temp-avg">--</span>
+                        <span class="text-xl text-gray-400 mt-2">°C</span>
+                    </div>
+                </div>
+
+                <!-- Sun Chart -->
+                <div class="flex-[0.8] bg-white rounded-xl border border-gray-100 p-6 flex flex-col relative group hover:border-black transition-colors duration-500 overflow-hidden">
+                    <div class="flex items-center gap-2 mb-2 flex-none">
+                        <i data-lucide="sun" class="w-4 h-4 text-gray-400"></i>
+                        <h3 class="text-sm font-bold uppercase tracking-wider text-gray-500">Ensoleillement</h3>
+                    </div>
+                    <div class="flex-1 w-full relative min-h-0">
+                        <canvas id="meteoSunChart"></canvas>
+                    </div>
                 </div>
             </div>
         </div>
 
-        <!-- Bottom Rain Chart (Full Width) -->
-        <div class="col-span-12 h-[35%] bg-white rounded-xl border border-gray-100 p-6 flex flex-col relative hover:border-black transition-colors duration-500">
-            <div class="flex items-center justify-between mb-2">
+        <!-- Bottom Row: Rain Chart (Flex Shrink/Grow) -->
+        <div class="flex-1 bg-white rounded-xl border border-gray-100 p-6 flex flex-col relative hover:border-black transition-colors duration-500 overflow-hidden">
+            <div class="flex items-center justify-between mb-2 flex-none">
                 <div class="flex items-center gap-2">
                     <i data-lucide="cloud-rain" class="w-4 h-4 text-gray-400"></i>
                     <h3 class="text-lg font-medium">Précipitations</h3>

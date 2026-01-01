@@ -46,8 +46,15 @@ function navigateToSection(sectionId) {
 
   const timeline = gsap.timeline();
 
+  // Kill running animations to prevent conflicts
+  gsap.killTweensOf([currentSection, targetSection]);
+
   // Exit Current Section
   if (currentSection) {
+    // Disable interactions immediately
+    currentSection.style.pointerEvents = "none";
+    currentSection.style.zIndex = "0";
+
     timeline.to(currentSection, {
       opacity: 0,
       y: -20,
@@ -56,18 +63,22 @@ function navigateToSection(sectionId) {
       onComplete: () => {
         currentSection.classList.remove("active");
         currentSection.classList.add("hidden");
+        currentSection.style.display = ""; // Clear inline display
+        currentSection.style.pointerEvents = ""; // Reset
       },
     });
   }
 
   // Prepare Target Section
+  targetSection.classList.remove("hidden");
+  targetSection.style.pointerEvents = "auto";
+  targetSection.style.zIndex = "10"; // Bring to front
+
   timeline.set(targetSection, {
-    display: "flex", // Important: flex to match CSS
+    display: "flex", 
     opacity: 0,
     y: 20
   });
-  
-  targetSection.classList.remove("hidden");
 
   // Enter Target Section
   timeline.to(targetSection, {
@@ -77,7 +88,7 @@ function navigateToSection(sectionId) {
     ease: "power3.out",
     onStart: () => {
       targetSection.classList.add("active");
-      // Trigger charts resize/update if needed
+      // Trigger charts resize/update
       window.dispatchEvent(new Event('resize'));
     },
     onComplete: () => {
