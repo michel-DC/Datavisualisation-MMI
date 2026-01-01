@@ -180,7 +180,7 @@ document.addEventListener("DOMContentLoaded", () => {
   Chart.defaults.font.family = "'Cabinet Grotesk', sans-serif";
   Chart.defaults.color = "#a3a3a3";
 
-  // 1. Temp Chart (Lignes fines)
+  // 1. Temp Chart (Coloré)
   const updateTempGraph = (labels, max, min) => {
     const ctx = document.getElementById("meteoTempChart");
     if (!ctx) return;
@@ -198,7 +198,8 @@ document.addEventListener("DOMContentLoaded", () => {
             {
               label: "Max",
               data: max,
-              borderColor: "#171717", // Neutral-900
+              borderColor: "#ef4444", // Red-500
+              backgroundColor: "rgba(239, 68, 68, 0.05)",
               borderWidth: 2,
               tension: 0.4,
               pointRadius: 0,
@@ -208,7 +209,8 @@ document.addEventListener("DOMContentLoaded", () => {
             {
               label: "Min",
               data: min,
-              borderColor: "#a3a3a3", // Neutral-400
+              borderColor: "#3b82f6", // Blue-500
+              backgroundColor: "rgba(59, 130, 246, 0.05)",
               borderWidth: 2,
               borderDash: [5, 5],
               tension: 0.4,
@@ -224,14 +226,16 @@ document.addEventListener("DOMContentLoaded", () => {
           plugins: {
             legend: { display: false },
             tooltip: {
-                backgroundColor: "#000",
-                titleColor: "#fff",
-                bodyColor: "#fff",
-                displayColors: false,
+                backgroundColor: "#fff",
+                titleColor: "#000",
+                bodyColor: "#000",
+                borderColor: "#e5e5e5",
+                borderWidth: 1,
+                displayColors: true,
                 intersect: false,
                 mode: 'index',
                 padding: 10,
-                cornerRadius: 4
+                cornerRadius: 8
             },
           },
           scales: {
@@ -244,7 +248,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   };
 
-  // 2. Rain Chart (Barres Noires)
+  // 2. Rain Chart (Bleu)
   const updateRainGraph = (labels, data) => {
     const ctx = document.getElementById("meteoRainChart");
     if (!ctx) return;
@@ -260,15 +264,15 @@ document.addEventListener("DOMContentLoaded", () => {
           datasets: [{
             label: "Précipitations",
             data: data,
-            backgroundColor: "#171717", // Noir
-            borderRadius: 2,
+            backgroundColor: "#3b82f6", // Blue-500
+            borderRadius: 4,
             barPercentage: 0.6,
           }]
         },
         options: {
           responsive: true,
           maintainAspectRatio: false,
-          plugins: { legend: { display: false }, tooltip: { backgroundColor: "#000", displayColors: false } },
+          plugins: { legend: { display: false }, tooltip: { backgroundColor: "#fff", titleColor: "#000", bodyColor: "#3b82f6", borderColor: "#e5e5e5", borderWidth: 1 } },
           scales: {
             x: { grid: { display: false }, border: { display: false }, ticks: { font: { weight: 'bold' } } },
             y: { grid: { color: "#f5f5f5" }, border: { display: false } }
@@ -278,7 +282,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   };
 
-  // 3. Sun Chart (Area Grise)
+  // 3. Sun Chart (Orange)
   const updateSunGraph = (labels, data) => {
     const ctx = document.getElementById("meteoSunChart");
     if (!ctx) return;
@@ -294,8 +298,8 @@ document.addEventListener("DOMContentLoaded", () => {
           datasets: [{
             label: "Ensoleillement",
             data: data,
-            borderColor: "#d4d4d4",
-            backgroundColor: "rgba(0,0,0,0.02)",
+            borderColor: "#f59e0b", // Amber-500
+            backgroundColor: "rgba(245, 158, 11, 0.1)",
             borderWidth: 2,
             tension: 0.4,
             pointRadius: 0,
@@ -305,10 +309,38 @@ document.addEventListener("DOMContentLoaded", () => {
         options: {
           responsive: true,
           maintainAspectRatio: false,
-          plugins: { legend: { display: false }, tooltip: { backgroundColor: "#000", displayColors: false } },
+          plugins: { 
+              legend: { display: false }, 
+              tooltip: { 
+                  backgroundColor: "#fff", 
+                  titleColor: "#000", 
+                  bodyColor: "#f59e0b", 
+                  borderColor: "#e5e5e5", 
+                  borderWidth: 1,
+                  callbacks: {
+                      label: (ctx) => `${ctx.formattedValue} W/m²`
+                  }
+              } 
+          },
           scales: {
-            x: { display: true, grid: { display: false }, ticks: { display: false } }, // Minimal
-            y: { display: false, grid: { display: false } }
+            x: { 
+                display: true, 
+                grid: { display: false }, 
+                ticks: { 
+                    display: true,
+                    font: { size: 9, weight: 'bold' }
+                },
+                border: { display: false }
+            },
+            y: { 
+                display: true, 
+                grid: { color: "#f5f5f5" }, 
+                ticks: { 
+                    display: true,
+                    font: { size: 9 }
+                },
+                border: { display: false }
+            }
           }
         }
       });

@@ -23,16 +23,24 @@ declare(strict_types=1);
             <!-- Legend -->
             <div class="flex items-center gap-6 mb-6">
                 <div class="flex items-center gap-2">
-                    <span class="w-2 h-2 rounded-full bg-black"></span>
+                    <span class="w-2 h-2 rounded-full bg-slate-500"></span>
                     <span class="text-xs font-medium text-gray-600">Industrie</span>
                 </div>
                 <div class="flex items-center gap-2">
-                    <span class="w-2 h-2 rounded-full bg-gray-400"></span>
+                    <span class="w-2 h-2 rounded-full bg-blue-500"></span>
                     <span class="text-xs font-medium text-gray-600">Transports</span>
                 </div>
                 <div class="flex items-center gap-2">
-                    <span class="w-2 h-2 rounded-full border border-gray-300"></span>
+                    <span class="w-2 h-2 rounded-full bg-green-500"></span>
                     <span class="text-xs font-medium text-gray-600">Agriculture</span>
+                </div>
+                <div class="flex items-center gap-2">
+                    <span class="w-2 h-2 rounded-full bg-purple-500"></span>
+                    <span class="text-xs font-medium text-gray-600">Tertiaire</span>
+                </div>
+                 <div class="flex items-center gap-2">
+                    <span class="w-2 h-2 rounded-full bg-amber-500"></span>
+                    <span class="text-xs font-medium text-gray-600">Déchets</span>
                 </div>
             </div>
 

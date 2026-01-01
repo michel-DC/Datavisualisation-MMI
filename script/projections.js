@@ -13,7 +13,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const precipData = [-10, -12.5, -15];
   const heatwaveData = [20, 50, 80];
 
-  // 1. Radar Chart (Températures) - Style Filaire Géométrique
+  // 1. Radar Chart (Températures) - Style Filaire Géométrique Coloré
   const tempChartConfig = {
     type: "radar",
     data: {
@@ -22,23 +22,23 @@ document.addEventListener("DOMContentLoaded", () => {
         {
           label: "Jour",
           data: tempDayData,
-          borderColor: "#000",
-          backgroundColor: "rgba(0,0,0,0)", // Transparent
+          borderColor: "#f97316", // Orange-500
+          backgroundColor: "rgba(249, 115, 22, 0.1)",
           borderWidth: 2,
           pointBackgroundColor: "#fff",
-          pointBorderColor: "#000",
+          pointBorderColor: "#f97316",
           pointRadius: 4,
           pointHoverRadius: 6,
         },
         {
           label: "Nuit",
           data: tempNightData,
-          borderColor: "#a3a3a3",
-          backgroundColor: "rgba(0,0,0,0)",
+          borderColor: "#6366f1", // Indigo-500
+          backgroundColor: "rgba(99, 102, 241, 0.1)",
           borderWidth: 2,
           borderDash: [4, 4],
           pointBackgroundColor: "#fff",
-          pointBorderColor: "#a3a3a3",
+          pointBorderColor: "#6366f1",
           pointRadius: 4,
           pointHoverRadius: 6,
         },
@@ -50,18 +50,22 @@ document.addEventListener("DOMContentLoaded", () => {
       plugins: {
         legend: { display: false },
         tooltip: {
-          backgroundColor: "#000",
+          backgroundColor: "#fff",
+          titleColor: "#000",
+          bodyColor: "#000",
+          borderColor: "#e5e5e5",
+          borderWidth: 1,
           titleFont: { family: fontStack },
           bodyFont: { family: fontStack },
           padding: 10,
-          cornerRadius: 4,
-          displayColors: false,
+          cornerRadius: 8,
+          displayColors: true,
         },
       },
       scales: {
         r: {
           angleLines: { display: true, color: "#e5e5e5" },
-          grid: { color: "#e5e5e5", circular: false }, // Pentagonal grid
+          grid: { color: "#e5e5e5", circular: false },
           pointLabels: {
             font: { family: fontStack, size: 11, weight: "bold" },
             color: "#525252",
@@ -75,7 +79,7 @@ document.addEventListener("DOMContentLoaded", () => {
     },
   };
 
-  // 2. Bar Chart (Climat) - Style Monochrome
+  // 2. Bar Chart (Climat) - Style Coloré
   const precipChartConfig = {
     type: "bar",
     data: {
@@ -84,15 +88,15 @@ document.addEventListener("DOMContentLoaded", () => {
         {
           label: "Pluies",
           data: precipData,
-          backgroundColor: "#d4d4d4",
-          borderRadius: 2,
+          backgroundColor: "#0ea5e9", // Sky-500
+          borderRadius: 4,
           barPercentage: 0.6,
         },
         {
           label: "Canicules",
           data: heatwaveData,
-          backgroundColor: "#171717",
-          borderRadius: 2,
+          backgroundColor: "#ef4444", // Red-500
+          borderRadius: 4,
           barPercentage: 0.6,
         },
       ],
@@ -103,12 +107,16 @@ document.addEventListener("DOMContentLoaded", () => {
       plugins: {
         legend: { display: false },
         tooltip: {
-          backgroundColor: "#000",
+          backgroundColor: "#fff",
+          titleColor: "#000",
+          bodyColor: "#000",
+          borderColor: "#e5e5e5",
+          borderWidth: 1,
           titleFont: { family: fontStack },
           bodyFont: { family: fontStack },
           padding: 10,
-          cornerRadius: 4,
-          displayColors: false,
+          cornerRadius: 8,
+          displayColors: true,
           callbacks: {
               label: (ctx) => `${ctx.dataset.label}: ${ctx.formattedValue}%`
           }

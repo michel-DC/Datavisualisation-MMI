@@ -27,11 +27,11 @@ declare(strict_types=1);
                 </div>
                 <div class="flex flex-col items-end gap-2">
                     <div class="flex items-center gap-2">
-                        <span class="w-2 h-2 rounded-full bg-orange-400"></span>
+                        <span class="w-2 h-2 rounded-full bg-orange-500"></span>
                         <span class="text-xs text-gray-600 uppercase">Jour</span>
                     </div>
                     <div class="flex items-center gap-2">
-                        <span class="w-2 h-2 rounded-full bg-gray-800"></span>
+                        <span class="w-2 h-2 rounded-full bg-indigo-500"></span>
                         <span class="text-xs text-gray-600 uppercase">Nuit</span>
                     </div>
                 </div>
@@ -51,11 +51,11 @@ declare(strict_types=1);
                 </div>
                 <div class="flex flex-col items-end gap-2">
                     <div class="flex items-center gap-2">
-                         <span class="w-2 h-2 rounded-full bg-blue-400"></span>
+                         <span class="w-2 h-2 rounded-full bg-sky-500"></span>
                          <span class="text-xs text-gray-600 uppercase">Pluie</span>
                     </div>
                      <div class="flex items-center gap-2">
-                         <span class="w-2 h-2 rounded-full bg-red-400"></span>
+                         <span class="w-2 h-2 rounded-full bg-red-500"></span>
                          <span class="text-xs text-gray-600 uppercase">Canicule</span>
                     </div>
                 </div>

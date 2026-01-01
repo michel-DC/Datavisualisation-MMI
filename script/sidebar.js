@@ -1,17 +1,18 @@
 document.addEventListener("DOMContentLoaded", () => {
-  // Initialize Lucide Icons
-  lucide.createIcons();
+  if (typeof lucide !== 'undefined') {
+    lucide.createIcons();
+  }
 
   const sidebarItems = document.querySelectorAll(".sidebar-item");
 
   sidebarItems.forEach((item) => {
-    item.addEventListener("click", () => {
+    item.addEventListener("click", (e) => {
+      e.preventDefault();
       const targetSection = item.getAttribute("data-section");
       navigateToSection(targetSection);
     });
   });
 
-  // Set default section
   navigateToSection("meteo");
 });
 
@@ -20,19 +21,12 @@ function navigateToSection(sectionId) {
   const targetSection = document.getElementById(`section-${sectionId}`);
   const sidebarItems = document.querySelectorAll(".sidebar-item");
 
-  if (!targetSection) {
-    console.warn(`Section ${sectionId} not found`);
+  if (!targetSection || currentSection === targetSection) {
     return;
   }
 
-  if (currentSection === targetSection) {
-    return;
-  }
-
-  // Update Sidebar State
   sidebarItems.forEach((item) => {
     const isTarget = item.getAttribute("data-section") === sectionId;
-    
     if (isTarget) {
       item.classList.add("sidebar-item--active");
       item.classList.remove("text-gray-500");
@@ -46,12 +40,12 @@ function navigateToSection(sectionId) {
 
   const timeline = gsap.timeline();
 
-  // Kill running animations to prevent conflicts
-  gsap.killTweensOf([currentSection, targetSection]);
-
-  // Exit Current Section
   if (currentSection) {
-    // Disable interactions immediately
+    gsap.killTweensOf(currentSection);
+  }
+  gsap.killTweensOf(targetSection);
+
+  if (currentSection) {
     currentSection.style.pointerEvents = "none";
     currentSection.style.zIndex = "0";
 
@@ -63,24 +57,22 @@ function navigateToSection(sectionId) {
       onComplete: () => {
         currentSection.classList.remove("active");
         currentSection.classList.add("hidden");
-        currentSection.style.display = ""; // Clear inline display
-        currentSection.style.pointerEvents = ""; // Reset
+        currentSection.style.display = "";
+        currentSection.style.pointerEvents = "";
       },
     });
   }
 
-  // Prepare Target Section
   targetSection.classList.remove("hidden");
   targetSection.style.pointerEvents = "auto";
-  targetSection.style.zIndex = "10"; // Bring to front
+  targetSection.style.zIndex = "10";
 
   timeline.set(targetSection, {
-    display: "flex", 
+    display: "flex",
     opacity: 0,
     y: 20
   });
 
-  // Enter Target Section
   timeline.to(targetSection, {
     opacity: 1,
     y: 0,
@@ -88,12 +80,11 @@ function navigateToSection(sectionId) {
     ease: "power3.out",
     onStart: () => {
       targetSection.classList.add("active");
-      // Trigger charts resize/update
       window.dispatchEvent(new Event('resize'));
     },
     onComplete: () => {
       const event = new CustomEvent("section-activated");
       targetSection.dispatchEvent(event);
     }
-  }, "-=0.2"); // Overlap slightly
+  }, currentSection ? "-=0.2" : 0);
 }

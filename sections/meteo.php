@@ -46,14 +46,19 @@ declare(strict_types=1); ?>
         <div class="flex-[1.6] grid grid-cols-12 gap-6 min-h-0">
             <!-- Main Temp Chart -->
             <div class="col-span-8 flex flex-col bg-[#fafafa] rounded-xl border border-gray-100 p-6 relative overflow-hidden">
-                <div class="flex items-center justify-between mb-4 flex-none">
-                    <h3 class="text-lg font-medium">Températures</h3>
-                    <div class="flex items-center gap-2">
-                        <span class="w-2 h-2 rounded-full bg-orange-400"></span>
-                        <span class="text-xs text-gray-500 uppercase">Moyenne (°C)</span>
-                    </div>
-                </div>
-                <div class="flex-1 w-full relative min-h-0">
+                            <div class="flex items-center justify-between mb-4 flex-none">
+                                <h3 class="text-lg font-medium">Températures</h3>
+                                <div class="flex items-center gap-4">
+                                    <div class="flex items-center gap-2">
+                                        <span class="w-2 h-2 rounded-full bg-red-500"></span>
+                                        <span class="text-xs text-gray-500 uppercase">Max</span>
+                                    </div>
+                                    <div class="flex items-center gap-2">
+                                        <span class="w-2 h-2 rounded-full bg-blue-500"></span>
+                                        <span class="text-xs text-gray-500 uppercase">Min</span>
+                                    </div>
+                                </div>
+                            </div>                <div class="flex-1 w-full relative min-h-0">
                     <canvas id="meteoTempChart"></canvas>
                 </div>
             </div>
@@ -72,7 +77,7 @@ declare(strict_types=1); ?>
                 <!-- Sun Chart -->
                 <div class="flex-[0.8] bg-white rounded-xl border border-gray-100 p-6 flex flex-col relative group hover:border-black transition-colors duration-500 overflow-hidden">
                     <div class="flex items-center gap-2 mb-2 flex-none">
-                        <i data-lucide="sun" class="w-4 h-4 text-gray-400"></i>
+                        <i data-lucide="sun" class="w-4 h-4 text-amber-500"></i>
                         <h3 class="text-sm font-bold uppercase tracking-wider text-gray-500">Ensoleillement</h3>
                     </div>
                     <div class="flex-1 w-full relative min-h-0">
@@ -86,7 +91,7 @@ declare(strict_types=1); ?>
         <div class="flex-1 bg-white rounded-xl border border-gray-100 p-6 flex flex-col relative hover:border-black transition-colors duration-500 overflow-hidden">
             <div class="flex items-center justify-between mb-2 flex-none">
                 <div class="flex items-center gap-2">
-                    <i data-lucide="cloud-rain" class="w-4 h-4 text-gray-400"></i>
+                    <i data-lucide="cloud-rain" class="w-4 h-4 text-blue-500"></i>
                     <h3 class="text-lg font-medium">Précipitations</h3>
                 </div>
                 <div class="flex items-end gap-1">

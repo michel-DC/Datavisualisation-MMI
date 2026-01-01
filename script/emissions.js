@@ -27,9 +27,10 @@ document.addEventListener("DOMContentLoaded", () => {
     const uniqueTypes = [...new Set(rawData.map((item) => item.type_emission))];
 
     const datasets = uniqueTypes.map((type, index) => {
-      // Palette Monochrome / Minimaliste
-      // Noir, Gris Foncé, Gris Moyen, Gris Clair, Gris très clair
-      const colors = ["#000000", "#525252", "#a3a3a3", "#d4d4d4", "#e5e5e5"];
+      // Palette Colorée & Sobre (Tailwind 500)
+      // Industrie: Slate/Gray, Transports: Blue, Agri: Green, Tertiaire: Purple, Déchets: Amber
+      // Ordre supposé ou par index rotatif
+      const colors = ["#64748b", "#3b82f6", "#22c55e", "#a855f7", "#f59e0b"];
       const color = colors[index % colors.length];
 
       return {
