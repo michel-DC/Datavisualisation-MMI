@@ -23,8 +23,8 @@ declare(strict_types=1); ?>
     <div class="flex h-screen w-screen">
         <?php require_once 'utils/sidebar.php'; ?>
 
-        <main class="flex-1 h-full relative ml-[260px] p-6">
-             <div class="w-full h-full bg-white rounded-3xl border border-[#e5e5e5] relative overflow-hidden">
+        <main class="flex-1 h-full relative ml-[120px] p-6">
+             <div class="w-full h-full bg-white rounded-3xl border border-[#e5e5e5] relative overflow-hidden shadow-sm">
                 <?php require_once 'sections/meteo.php'; ?>
                 <?php require_once 'sections/emissions.php'; ?>
                 <?php require_once 'sections/projections.php'; ?>
