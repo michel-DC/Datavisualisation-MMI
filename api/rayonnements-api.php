@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-require_once __DIR__ . '/../utils/climate-data.php';
+require_once '../utils/climate-data.php';
 
 header('Content-Type: application/json');
 

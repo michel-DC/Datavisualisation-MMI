@@ -1,18 +1,20 @@
-<?php declare(strict_types=1); ?>
+<?php
+
+declare(strict_types=1); ?>
 
 <aside id="sidebar" class="fixed top-6 left-6 bottom-6 w-[84px] z-50 flex flex-col gap-4">
-    
+
     <!-- Header Block -->
     <div class="bg-white rounded-[24px] border border-gray-100 p-4 shadow-sm flex items-center justify-center">
         <div class="flex flex-col items-center">
-            <span class="text-[18px] font-black text-black tracking-tighter">G.</span>
+            <img src="assets/favicon/drapeau.svg" alt="Drapeau de la Guadeloupe" class="w-6 h-6">
         </div>
     </div>
 
     <!-- Navigation Block (Content) -->
-    <nav class="flex-1 bg-white rounded-[24px] border border-gray-100 p-3 shadow-sm flex flex-col items-center gap-4">
-        <button 
-            data-section="meteo" 
+    <nav class="flex-1 bg-white rounded-[24px] border border-gray-100 p-3 shadow-sm flex flex-col items-center justify-center gap-4">
+        <button
+            data-section="meteo"
             class="sidebar-item group relative flex items-center justify-center w-12 h-12 rounded-xl text-gray-500 hover:text-black hover:bg-gray-50 transition-all"
             aria-label="Météo">
             <i data-lucide="cloud-sun" class="w-5 h-5"></i>
@@ -21,8 +23,8 @@
             </span>
         </button>
 
-        <button 
-            data-section="emissions" 
+        <button
+            data-section="emissions"
             class="sidebar-item group relative flex items-center justify-center w-12 h-12 rounded-xl text-gray-500 hover:text-black hover:bg-gray-50 transition-all"
             aria-label="Émissions">
             <i data-lucide="factory" class="w-5 h-5"></i>
@@ -31,8 +33,8 @@
             </span>
         </button>
 
-        <button 
-            data-section="projections" 
+        <button
+            data-section="projections"
             class="sidebar-item group relative flex items-center justify-center w-12 h-12 rounded-xl text-gray-500 hover:text-black hover:bg-gray-50 transition-all"
             aria-label="Projections">
             <i data-lucide="trending-up" class="w-5 h-5"></i>
