@@ -2,25 +2,67 @@
 @tailwind components;
 @tailwind utilities;
 
+@font-face {
+    font-family: 'Cabinet Grotesk';
+    src: url('../assets/fonts/cabinet/CabinetGrotesk-Variable.woff2') format('woff2'),
+         url('../assets/fonts/cabinet/CabinetGrotesk-Variable.woff') format('woff'),
+         url('../assets/fonts/cabinet/CabinetGrotesk-Variable.ttf') format('truetype');
+    font-weight: 100 900;
+    font-display: swap;
+    font-style: normal;
+}
+
+:root {
+    --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+body {
+    font-family: 'Cabinet Grotesk', sans-serif;
+    color: #1a1a1a;
+}
+
+/* Scrollbar Hide */
+.no-scrollbar::-webkit-scrollbar {
+    display: none;
+}
+.no-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+}
+
+/* Sidebar Styling */
+.sidebar-item {
+    position: relative;
+    transition: all 0.4s var(--ease-out-expo);
+    border: 1px solid transparent;
+}
+
+.sidebar-item::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 50%;
+    transform: translateY(-50%) scaleY(0);
+    width: 2px;
+    height: 12px;
+    background-color: #000;
+    transition: transform 0.3s var(--ease-out-expo);
+}
+
 .sidebar-item--active {
-  background-color: #f8fafc; /* slate-50 */
-  border-radius: 1rem;
+    background-color: #f4f4f5; /* zinc-100 */
+    color: #000;
 }
 
-.sidebar-item--active:hover {
-  background-color: #f1f5f9; /* slate-100 */
+.sidebar-item--active::before {
+    transform: translateY(-50%) scaleY(1);
 }
 
-/* Ensure icons in active state get the specific color */
-.sidebar-item--active i {
-  color: #2563eb; /* blue-600 */
+.sidebar-item:hover:not(.sidebar-item--active) {
+    color: #000;
 }
 
-/* Specific overrides for different sections if needed, utilizing data-attributes */
-[data-section="emissions"].sidebar-item--active i {
-  color: #059669; /* emerald-600 */
-}
-
-[data-section="projections"].sidebar-item--active i {
-  color: #ea580c; /* orange-600 */
+/* Canvas/Chart Adjustments */
+canvas {
+    max-width: 100%;
 }

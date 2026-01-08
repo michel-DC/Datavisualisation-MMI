@@ -4,13 +4,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const kpiTempAvg = document.getElementById("kpi-temp-avg");
   const kpiPrecipTotal = document.getElementById("kpi-precip-total");
 
-  // Stockage des données complètes
-  let climateData = {
-    precipitations: {},
-    temperatures: {},
-    rayonnements: {}
-  };
-
+  let climateData = { precipitations: {}, temperatures: {}, rayonnements: {} };
   let tempChart, rainChart, sunChart;
   const monthLabels = ["Jan", "Fév", "Mar", "Avr", "Mai", "Juin", "Juil", "Août", "Sep", "Oct", "Nov", "Déc"];
 
@@ -37,11 +31,10 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   };
 
-  // --- 2. Init Filters (Zones & Years) ---
+  // --- 2. Filters ---
   const initFilters = () => {
     if (!stationSelect || !yearSelect) return;
 
-    // 2a. Zones
     const zones = new Set([
       ...Object.keys(climateData.precipitations),
       ...Object.keys(climateData.temperatures),
@@ -49,8 +42,6 @@ document.addEventListener("DOMContentLoaded", () => {
     ]);
 
     stationSelect.innerHTML = "";
-    
-    // Ajouter l'option "Moyenne Globale" en premier
     const globalOpt = document.createElement("option");
     globalOpt.value = "global";
     globalOpt.innerText = "Moyenne Globale";
@@ -63,10 +54,7 @@ document.addEventListener("DOMContentLoaded", () => {
       stationSelect.appendChild(opt);
     });
     
-    // Défaut sur Global
     stationSelect.value = "global";
-
-    // 2b. Années
     updateYearFilter();
 
     stationSelect.addEventListener("change", () => {
@@ -80,8 +68,7 @@ document.addEventListener("DOMContentLoaded", () => {
     let allYears = new Set();
 
     if (zone === 'global') {
-      // Pour global, on prend toutes les années dispos de toutes les zones
-      const zones = Object.keys(climateData.temperatures); // On se base sur temp par ex
+      const zones = Object.keys(climateData.temperatures);
       zones.forEach(z => {
          Object.keys(climateData.temperatures[z] || {}).forEach(y => allYears.add(y));
       });
@@ -93,15 +80,14 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     const sortedYears = [...allYears].sort((a, b) => b - a);
-
     const currentVal = yearSelect.value;
     yearSelect.innerHTML = "";
     
     if (sortedYears.length === 0) {
-      const opt = document.createElement("option");
-      opt.innerText = "Aucune donnée";
-      yearSelect.appendChild(opt);
-      return;
+        const opt = document.createElement("option");
+        opt.innerText = "-";
+        yearSelect.appendChild(opt);
+        return;
     }
 
     sortedYears.forEach(y => {
@@ -118,41 +104,28 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   };
 
-  // --- 3. Render Logic ---
+  // --- 3. Render ---
   const updateDashboard = () => {
     if (!stationSelect || !yearSelect) return;
     
     const zone = stationSelect.value;
     const year = yearSelect.value;
 
-    // Update Header
-    const headerTitle = document.getElementById("header-title-station");
-    if (headerTitle) headerTitle.innerText = (zone === 'global') ? 'Guadeloupe (Moyenne)' : zone;
-
     const tMax = [];
     const tMin = [];
     const rain = [];
     const sun = [];
 
-    // Helper pour calculer la moyenne globale d'un mois
     const getGlobalVal = (dataType, year, month, key = null) => {
         let sum = 0;
         let count = 0;
         const zones = Object.keys(climateData[dataType]);
-        
         zones.forEach(z => {
             const dataYear = climateData[dataType][z]?.[year];
             if (dataYear && dataYear[month] !== undefined) {
                 let val = dataYear[month];
-                // Si c'est un objet (ex: {TX: 30, TN: 20})
-                if (key && typeof val === 'object' && val !== null) {
-                    val = val[key];
-                }
-                
-                if (val !== null) {
-                    sum += val;
-                    count++;
-                }
+                if (key && typeof val === 'object' && val !== null) val = val[key];
+                if (val !== null) { sum += val; count++; }
             }
         });
         return count > 0 ? (sum / count) : null;
@@ -160,13 +133,11 @@ document.addEventListener("DOMContentLoaded", () => {
 
     for (let m = 1; m <= 12; m++) {
       if (zone === 'global') {
-          // Calculer les moyennes de toutes les zones
           tMax.push(getGlobalVal('temperatures', year, m, 'TX'));
           tMin.push(getGlobalVal('temperatures', year, m, 'TN'));
           rain.push(getGlobalVal('precipitations', year, m));
           sun.push(getGlobalVal('rayonnements', year, m));
       } else {
-          // Zone spécifique
           const tVal = climateData.temperatures[zone]?.[year]?.[m];
           if (tVal) {
             tMax.push(tVal.TX !== null ? tVal.TX : null);
@@ -183,9 +154,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     // KPIs
-    // Moyenne des (Max + Min)/2
-    let sumTemp = 0;
-    let countTemp = 0;
+    let sumTemp = 0, countTemp = 0;
     for(let i=0; i<12; i++) {
         if(tMax[i] !== null && tMin[i] !== null) {
             sumTemp += (tMax[i] + tMin[i]) / 2;
@@ -194,7 +163,6 @@ document.addEventListener("DOMContentLoaded", () => {
     }
     if (kpiTempAvg) kpiTempAvg.innerText = countTemp ? (sumTemp / countTemp).toFixed(1) : "--";
 
-    // Total Pluie
     let sumRain = 0;
     rain.forEach(r => { if(r !== null) sumRain += r; });
     if (kpiPrecipTotal) kpiPrecipTotal.innerText = Math.round(sumRain);
@@ -208,9 +176,11 @@ document.addEventListener("DOMContentLoaded", () => {
     updateSunGraph(labels, sun);
   };
 
-  // --- Charts ---
+  // Config Globale ChartJS
+  Chart.defaults.font.family = "'Cabinet Grotesk', sans-serif";
+  Chart.defaults.color = "#a3a3a3";
 
-  // 1. Temperature (Ancien Style: Remplissage entre Max et Min)
+  // 1. Temp Chart (Coloré)
   const updateTempGraph = (labels, max, min) => {
     const ctx = document.getElementById("meteoTempChart");
     if (!ctx) return;
@@ -220,9 +190,6 @@ document.addEventListener("DOMContentLoaded", () => {
       tempChart.data.datasets[1].data = min;
       tempChart.update();
     } else {
-      Chart.defaults.font.family = "Inter, system-ui, sans-serif";
-      Chart.defaults.color = "#64748b";
-
       tempChart = new Chart(ctx, {
         type: "line",
         data: {
@@ -231,24 +198,25 @@ document.addEventListener("DOMContentLoaded", () => {
             {
               label: "Max",
               data: max,
-              borderColor: "#ea580c", // orange-600
-              backgroundColor: "rgba(234, 88, 12, 0.1)",
-              borderWidth: 3,
+              borderColor: "#ef4444", // Red-500
+              backgroundColor: "rgba(239, 68, 68, 0.05)",
+              borderWidth: 2,
               tension: 0.4,
               pointRadius: 0,
-              pointHoverRadius: 6,
-              fill: "+1", // Remplir vers le dataset suivant (Min)
+              pointHoverRadius: 4,
+              fill: false,
             },
             {
               label: "Min",
               data: min,
-              borderColor: "#fb923c", // orange-400
-              backgroundColor: "rgba(251, 146, 60, 0.05)", // Back de secours
-              borderWidth: 3,
+              borderColor: "#3b82f6", // Blue-500
+              backgroundColor: "rgba(59, 130, 246, 0.05)",
+              borderWidth: 2,
+              borderDash: [5, 5],
               tension: 0.4,
               pointRadius: 0,
-              pointHoverRadius: 6,
-              fill: false, // Déjà rempli par Max
+              pointHoverRadius: 4,
+              fill: false,
             },
           ],
         },
@@ -258,22 +226,21 @@ document.addEventListener("DOMContentLoaded", () => {
           plugins: {
             legend: { display: false },
             tooltip: {
-              backgroundColor: "rgba(15, 23, 42, 0.9)",
-              padding: 12,
-              cornerRadius: 8,
-              mode: 'index',
-              intersect: false
+                backgroundColor: "#fff",
+                titleColor: "#000",
+                bodyColor: "#000",
+                borderColor: "#e5e5e5",
+                borderWidth: 1,
+                displayColors: true,
+                intersect: false,
+                mode: 'index',
+                padding: 10,
+                cornerRadius: 8
             },
           },
           scales: {
-            x: {
-              grid: { display: false },
-              ticks: { font: { size: 11 } },
-            },
-            y: {
-              grid: { color: "#f1f5f9", borderDash: [4, 4] },
-              border: { display: false },
-            },
+            x: { grid: { display: false }, ticks: { font: { size: 10, weight: 'bold' } } },
+            y: { grid: { color: "#f5f5f5" }, border: { display: false } },
           },
           interaction: { mode: "index", intersect: false },
         },
@@ -281,7 +248,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   };
 
-  // 2. Rain
+  // 2. Rain Chart (Bleu)
   const updateRainGraph = (labels, data) => {
     const ctx = document.getElementById("meteoRainChart");
     if (!ctx) return;
@@ -297,26 +264,25 @@ document.addEventListener("DOMContentLoaded", () => {
           datasets: [{
             label: "Précipitations",
             data: data,
-            backgroundColor: "#3b82f6",
-            borderRadius: 6,
-            maxBarThickness: 60,
-            hoverBackgroundColor: "#2563eb",
+            backgroundColor: "#3b82f6", // Blue-500
+            borderRadius: 4,
+            barPercentage: 0.6,
           }]
         },
         options: {
           responsive: true,
           maintainAspectRatio: false,
-          plugins: { legend: { display: false } },
+          plugins: { legend: { display: false }, tooltip: { backgroundColor: "#fff", titleColor: "#000", bodyColor: "#3b82f6", borderColor: "#e5e5e5", borderWidth: 1 } },
           scales: {
-            x: { grid: { display: false }, border: { display: false } },
-            y: { grid: { color: "#f1f5f9", borderDash: [4, 4] }, border: { display: false } }
+            x: { grid: { display: false }, border: { display: false }, ticks: { font: { weight: 'bold' } } },
+            y: { grid: { color: "#f5f5f5" }, border: { display: false } }
           }
         }
       });
     }
   };
 
-  // 3. Sun
+  // 3. Sun Chart (Orange)
   const updateSunGraph = (labels, data) => {
     const ctx = document.getElementById("meteoSunChart");
     if (!ctx) return;
@@ -332,31 +298,57 @@ document.addEventListener("DOMContentLoaded", () => {
           datasets: [{
             label: "Ensoleillement",
             data: data,
-            borderColor: "#f97316",
+            borderColor: "#f59e0b", // Amber-500
+            backgroundColor: "rgba(245, 158, 11, 0.1)",
             borderWidth: 2,
             tension: 0.4,
             pointRadius: 0,
-            pointHoverRadius: 4,
-            fill: false
+            fill: true
           }]
         },
         options: {
           responsive: true,
           maintainAspectRatio: false,
-          plugins: { legend: { display: false } },
+          plugins: { 
+              legend: { display: false }, 
+              tooltip: { 
+                  backgroundColor: "#fff", 
+                  titleColor: "#000", 
+                  bodyColor: "#f59e0b", 
+                  borderColor: "#e5e5e5", 
+                  borderWidth: 1,
+                  callbacks: {
+                      label: (ctx) => `${ctx.formattedValue} W/m²`
+                  }
+              } 
+          },
           scales: {
-            x: { display: true, grid: { display: false }, ticks: { font: { size: 10 } } },
-            y: { display: true, grid: { color: "#f1f5f9", borderDash: [4, 4] }, border: { display: false }, ticks: { font: { size: 10 } } }
+            x: { 
+                display: true, 
+                grid: { display: false }, 
+                ticks: { 
+                    display: true,
+                    font: { size: 9, weight: 'bold' }
+                },
+                border: { display: false }
+            },
+            y: { 
+                display: true, 
+                grid: { color: "#f5f5f5" }, 
+                ticks: { 
+                    display: true,
+                    font: { size: 9 }
+                },
+                border: { display: false }
+            }
           }
         }
       });
     }
   };
 
-  // Init Listener for year change
   if (yearSelect) yearSelect.addEventListener("change", updateDashboard);
   
-  // Refresh button
   const refreshBtn = document.getElementById("refresh-btn");
   if (refreshBtn) {
     refreshBtn.addEventListener("click", () => {
@@ -368,6 +360,14 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  // Start
   fetchData();
+  
+  // Entrance Animation
+  const section = document.getElementById("section-meteo");
+  section.addEventListener("section-activated", () => {
+      const tl = gsap.timeline();
+      tl.from("#section-meteo h1", { y: 20, opacity: 0, duration: 0.8, ease: "power3.out" }, 0);
+      tl.from("#section-meteo .col-span-8", { y: 20, opacity: 0, duration: 0.8, ease: "power3.out" }, 0.1);
+      tl.from("#section-meteo .col-span-4", { x: 20, opacity: 0, duration: 0.8, ease: "power3.out" }, 0.2);
+  });
 });

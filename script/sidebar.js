@@ -1,18 +1,18 @@
 document.addEventListener("DOMContentLoaded", () => {
-  // Initialize Lucide Icons
-  lucide.createIcons();
+  if (typeof lucide !== 'undefined') {
+    lucide.createIcons();
+  }
 
   const sidebarItems = document.querySelectorAll(".sidebar-item");
 
   sidebarItems.forEach((item) => {
-    // Section navigation click logic
-    item.addEventListener("click", () => {
+    item.addEventListener("click", (e) => {
+      e.preventDefault();
       const targetSection = item.getAttribute("data-section");
       navigateToSection(targetSection);
     });
   });
 
-  // Set default section
   navigateToSection("meteo");
 });
 
@@ -21,97 +21,70 @@ function navigateToSection(sectionId) {
   const targetSection = document.getElementById(`section-${sectionId}`);
   const sidebarItems = document.querySelectorAll(".sidebar-item");
 
-  if (!targetSection) {
-    console.warn(`Section ${sectionId} not found`);
+  if (!targetSection || currentSection === targetSection) {
     return;
   }
 
-  if (currentSection === targetSection) {
-    return;
-  }
-
-  // Update sidebar items state
-  // Update sidebar items state
   sidebarItems.forEach((item) => {
-    const iconContainer = item.querySelector("div"); // The icon box
-    // Lucide replaces <i> with <svg>, so we must target svg
-    const icon = item.querySelector("svg");
-    const text = item.querySelector("span");
-
-    // Minimalist Active State Logic - Icons Only
-    if (item.getAttribute("data-section") === sectionId) {
-      // Active State
-      // Icon: Dark (slate-800)
-      if (icon) {
-        icon.classList.remove("text-slate-500");
-        icon.classList.add("text-slate-800", "scale-110");
-      }
+    const isTarget = item.getAttribute("data-section") === sectionId;
+    if (isTarget) {
+      item.classList.add("sidebar-item--active");
+      item.classList.remove("text-gray-500");
+      item.classList.add("text-black");
     } else {
-      // Inactive State
-      // Icon: Gray (slate-500)
-      if (icon) {
-        icon.classList.add("text-slate-500");
-        icon.classList.remove("text-slate-800", "scale-110");
-      }
+      item.classList.remove("sidebar-item--active");
+      item.classList.add("text-gray-500");
+      item.classList.remove("text-black");
     }
   });
 
   const timeline = gsap.timeline();
 
   if (currentSection) {
+    gsap.killTweensOf(currentSection);
+  }
+  gsap.killTweensOf(targetSection);
+
+  if (currentSection) {
+    currentSection.style.pointerEvents = "none";
+    currentSection.style.zIndex = "0";
+
     timeline.to(currentSection, {
       opacity: 0,
-      scale: 0.95,
+      y: -20,
       duration: 0.4,
-      ease: "power2.in",
+      ease: "power3.in",
       onComplete: () => {
         currentSection.classList.remove("active");
-        currentSection.style.display = "none";
+        currentSection.classList.add("hidden");
+        currentSection.style.display = "";
+        currentSection.style.pointerEvents = "";
       },
     });
   }
 
-  // Check if the target section has a custom entrance animation
-  const isCustomAnim = targetSection.dataset.customAnim === "true";
+  targetSection.classList.remove("hidden");
+  targetSection.style.pointerEvents = "auto";
+  targetSection.style.zIndex = "10";
 
-  // Prepare initial state
-  const initialProps = {
-    display: "block",
-  };
+  timeline.set(targetSection, {
+    display: "flex",
+    opacity: 0,
+    y: 20
+  });
 
-  // If NOT custom, prepare for standard fade-in
-  if (!isCustomAnim) {
-    initialProps.opacity = 0;
-    initialProps.scale = 0.95;
-  } else {
-    // If custom, ensure it's fully visible immediately
-    initialProps.opacity = 1;
-    initialProps.scale = 1;
-  }
-
-  timeline.set(targetSection, initialProps);
-
-  if (isCustomAnim) {
-    // For custom sections, just trigger the active state and event immediately
-    timeline.add(() => {
+  timeline.to(targetSection, {
+    opacity: 1,
+    y: 0,
+    duration: 0.6,
+    ease: "power3.out",
+    onStart: () => {
       targetSection.classList.add("active");
+      window.dispatchEvent(new Event('resize'));
+    },
+    onComplete: () => {
       const event = new CustomEvent("section-activated");
       targetSection.dispatchEvent(event);
-    });
-  } else {
-    // Standard Entrance Animation
-    timeline.to(targetSection, {
-      opacity: 1,
-      scale: 1,
-      duration: 0.5,
-      ease: "power2.out",
-      onStart: () => {
-        targetSection.classList.add("active");
-      },
-      onComplete: () => {
-        const event = new CustomEvent("section-activated");
-        targetSection.dispatchEvent(event);
-      },
-    });
-  }
+    }
+  }, currentSection ? "-=0.2" : 0);
 }

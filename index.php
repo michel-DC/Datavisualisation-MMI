@@ -16,28 +16,34 @@ declare(strict_types=1); ?>
 
 </head>
 
-<body class="bg-gray-50 overflow-hidden h-screen w-screen selection:bg-blue-100 selection:text-blue-900">
+<body class="bg-[#f2f2f2] overflow-hidden h-screen w-screen selection:bg-black selection:text-white font-sans antialiased">
 
     <?php require_once 'animations/animation-debut.php'; ?>
 
     <div class="flex h-screen w-screen">
         <?php require_once 'utils/sidebar.php'; ?>
 
-        <main class="flex-1 h-full relative ml-[220px] bg-sky-50">
-            <?php require_once 'sections/meteo.php'; ?>
-            <?php require_once 'sections/emissions.php'; ?>
-            <?php require_once 'sections/projections.php'; ?>
+        <main class="flex-1 h-full relative ml-[120px] p-6">
+            <div class="w-full h-full bg-white rounded-3xl border border-[#e5e5e5] relative overflow-hidden shadow-sm">
+                <?php require_once 'sections/meteo.php'; ?>
+
+                <?php require_once 'sections/projections.php'; ?>
+            </div>
         </main>
     </div>
 
     <script src="https://unpkg.com/lucide@latest"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
+    <!-- GSAP Core & Plugins -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+
     <!-- Scripts -->
-    <script src="/script/sidebar.js"></script>
-    <script src="/script/meteo.js"></script>
-    <script src="/script/emissions.js"></script>
-    <script src="/script/projections.js"></script>
+    <script src="script/sidebar.js"></script>
+    <script src="script/meteo.js"></script>
+
+    <script src="script/projections.js"></script>
 </body>
 
 </html>
