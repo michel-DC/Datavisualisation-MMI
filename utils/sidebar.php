@@ -34,6 +34,16 @@ declare(strict_types=1); ?>
                 Projections 2050
             </span>
         </button>
+
+        <button
+            data-section="estimations"
+            class="sidebar-item group relative flex items-center justify-center w-12 h-12 rounded-xl text-gray-500 hover:text-black hover:bg-gray-50 transition-all"
+            aria-label="Estimations climatiques">
+            <i data-lucide="thermometer" class="w-5 h-5"></i>
+            <span class="absolute left-full ml-4 px-3 py-2 bg-black text-white text-[10px] font-bold rounded-lg opacity-0 group-hover:opacity-100 pointer-events-none transition-all translate-x-[-10px] group-hover:translate-x-0 whitespace-nowrap z-50 uppercase tracking-widest shadow-xl">
+                Estimations climat
+            </span>
+        </button>
     </nav>
 
     <!-- Footer Block -->

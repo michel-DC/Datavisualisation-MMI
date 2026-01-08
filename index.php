@@ -28,6 +28,8 @@ declare(strict_types=1); ?>
                 <?php require_once 'sections/meteo.php'; ?>
 
                 <?php require_once 'sections/projections.php'; ?>
+
+                <?php require_once 'sections/estimations.php'; ?>
             </div>
         </main>
     </div>
