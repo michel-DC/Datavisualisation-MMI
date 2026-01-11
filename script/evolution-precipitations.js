@@ -1,19 +1,46 @@
 document.addEventListener("DOMContentLoaded", () => {
     let rawData = null; // Structure: [Zone][Year][Month] = value
     let precipChart = null;
+    let isIntroFinished = false;
 
     const dom = {
         zoneSelect: document.getElementById("evolution-precip-zone-filter"),
         yearSelect: document.getElementById("evolution-precip-year-select"),
         refreshBtn: document.getElementById("evolution-precip-refresh-btn"),
         canvas: document.getElementById("evolution-precip-chart"),
-        chartTitle: document.getElementById("evolution-precip-chart-title")
+        chartTitle: document.getElementById("evolution-precip-chart-title"),
+        modal: document.getElementById("precip-info-modal"),
+        modalContent: document.getElementById("precip-modal-content"),
+        closeModalBtn: document.getElementById("close-precip-modal"),
+        discoverBtn: document.getElementById("close-precip-modal-btn")
     };
 
     const MONTH_NAMES = [
         "Janvier", "Février", "Mars", "Avril", "Mai", "Juin", 
         "Juillet", "Août", "Septembre", "Octobre", "Novembre", "Décembre"
     ];
+
+    const showModal = () => {
+        if (dom.modal && dom.modalContent) {
+            dom.modal.classList.remove("opacity-0", "pointer-events-none");
+            dom.modalContent.classList.remove("scale-95");
+        }
+    };
+
+    const hideModal = () => {
+        if (dom.modal && dom.modalContent) {
+            dom.modal.classList.add("opacity-0", "pointer-events-none");
+            dom.modalContent.classList.add("scale-95");
+        }
+    };
+
+    window.addEventListener("intro-finished", () => {
+        isIntroFinished = true;
+        const section = document.getElementById("section-evolution-precipitations");
+        if (section && !section.classList.contains("hidden")) {
+            showModal();
+        }
+    });
 
     const init = async () => {
         if (!dom.canvas) return;
@@ -25,6 +52,7 @@ document.addEventListener("DOMContentLoaded", () => {
                     if (mutation.type === 'attributes' && mutation.attributeName === 'class') {
                         if (!section.classList.contains('hidden')) {
                             console.log("Section Precip visible, updating...");
+                            if (isIntroFinished) showModal();
                             setTimeout(() => {
                                 if (precipChart) {
                                     precipChart.resize();
@@ -40,6 +68,7 @@ document.addEventListener("DOMContentLoaded", () => {
             observer.observe(section, { attributes: true });
 
             section.addEventListener("section-activated", () => {
+                if (isIntroFinished) showModal();
                 setTimeout(() => {
                      if (precipChart) precipChart.update();
                      else updateDashboard();
@@ -221,6 +250,9 @@ document.addEventListener("DOMContentLoaded", () => {
                 });
             });
         }
+
+        if (dom.closeModalBtn) dom.closeModalBtn.addEventListener("click", hideModal);
+        if (dom.discoverBtn) dom.discoverBtn.addEventListener("click", hideModal);
     };
 
     init();

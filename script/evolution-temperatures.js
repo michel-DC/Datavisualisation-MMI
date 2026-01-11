@@ -1,19 +1,47 @@
 document.addEventListener("DOMContentLoaded", () => {
     let rawData = null; // Structure: [Zone][Year][Month] = value
     let tempChart = null;
+    let isIntroFinished = false;
+
+    window.addEventListener("intro-finished", () => {
+        isIntroFinished = true;
+        // Si la section est déjà active (cas du premier chargement), on affiche le modal
+        const section = document.getElementById("section-evolution-temperatures");
+        if (section && !section.classList.contains("hidden")) {
+            showModal();
+        }
+    });
 
     const dom = {
         zoneSelect: document.getElementById("evolution-temp-zone-filter"),
         yearSelect: document.getElementById("evolution-temp-year-select"),
         refreshBtn: document.getElementById("evolution-temp-refresh-btn"),
         canvas: document.getElementById("evolution-temp-chart"),
-        chartTitle: document.getElementById("evolution-temp-chart-title")
+        chartTitle: document.getElementById("evolution-temp-chart-title"),
+        modal: document.getElementById("temp-info-modal"),
+        modalContent: document.getElementById("temp-modal-content"),
+        closeModalBtn: document.getElementById("close-temp-modal"),
+        discoverBtn: document.getElementById("close-temp-modal-btn")
     };
 
     const MONTH_NAMES = [
         "Janvier", "Février", "Mars", "Avril", "Mai", "Juin", 
         "Juillet", "Août", "Septembre", "Octobre", "Novembre", "Décembre"
     ];
+
+    const showModal = () => {
+        if (dom.modal && dom.modalContent) {
+            dom.modal.classList.remove("opacity-0", "pointer-events-none");
+            dom.modalContent.classList.remove("scale-95");
+        }
+    };
+
+    const hideModal = () => {
+        if (dom.modal && dom.modalContent) {
+            dom.modal.classList.add("opacity-0", "pointer-events-none");
+            dom.modalContent.classList.add("scale-95");
+        }
+    };
 
     const init = async () => {
         if (!dom.canvas) {
@@ -29,6 +57,7 @@ document.addEventListener("DOMContentLoaded", () => {
                     if (mutation.type === 'attributes' && mutation.attributeName === 'class') {
                         if (!section.classList.contains('hidden')) {
                             console.log("Section visible, updating chart...");
+                            if (isIntroFinished) showModal(); // Show modal only if intro is done
                             // Petit délai pour laisser le temps au layout de se faire
                             setTimeout(() => {
                                 if (tempChart) {
@@ -48,6 +77,7 @@ document.addEventListener("DOMContentLoaded", () => {
             // Écouteur personnalisé existant
             section.addEventListener("section-activated", () => {
                 console.log("Event section-activated received");
+                if (isIntroFinished) showModal();
                 setTimeout(() => {
                      if (tempChart) tempChart.update();
                      else updateDashboard();
@@ -272,6 +302,9 @@ document.addEventListener("DOMContentLoaded", () => {
                 });
             });
         }
+
+        if (dom.closeModalBtn) dom.closeModalBtn.addEventListener("click", hideModal);
+        if (dom.discoverBtn) dom.discoverBtn.addEventListener("click", hideModal);
     };
 
     if (typeof Chart !== 'undefined') {

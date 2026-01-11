@@ -2,6 +2,7 @@ document.addEventListener("DOMContentLoaded", () => {
     let rawData = null;
     let regressionChart = null;
     let currentRegression = null;
+    let isIntroFinished = false;
 
     const dom = {
         zoneSelect: document.getElementById("regression-zone-filter"),
@@ -9,8 +10,34 @@ document.addEventListener("DOMContentLoaded", () => {
         canvas: document.getElementById("regression-chart"),
         equationDisplay: document.getElementById("regression-equation"),
         predictInput: document.getElementById("predict-temp"),
-        predictResult: document.getElementById("prediction-result")
+        predictResult: document.getElementById("prediction-result"),
+        modal: document.getElementById("reg-info-modal"),
+        modalContent: document.getElementById("reg-modal-content"),
+        closeModalBtn: document.getElementById("close-reg-modal"),
+        discoverBtn: document.getElementById("close-reg-modal-btn")
     };
+
+    const showModal = () => {
+        if (dom.modal && dom.modalContent) {
+            dom.modal.classList.remove("opacity-0", "pointer-events-none");
+            dom.modalContent.classList.remove("scale-95");
+        }
+    };
+
+    const hideModal = () => {
+        if (dom.modal && dom.modalContent) {
+            dom.modal.classList.add("opacity-0", "pointer-events-none");
+            dom.modalContent.classList.add("scale-95");
+        }
+    };
+
+    window.addEventListener("intro-finished", () => {
+        isIntroFinished = true;
+        const section = document.getElementById("section-regression-lineaire");
+        if (section && !section.classList.contains("hidden")) {
+            showModal();
+        }
+    });
 
     const init = async () => {
         if (!dom.canvas) return;
@@ -21,6 +48,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 mutations.forEach((mutation) => {
                     if (mutation.type === 'attributes' && mutation.attributeName === 'class') {
                         if (!section.classList.contains('hidden')) {
+                            if (isIntroFinished) showModal();
                             setTimeout(() => {
                                 if (regressionChart) {
                                     regressionChart.resize();
@@ -34,6 +62,10 @@ document.addEventListener("DOMContentLoaded", () => {
                 });
             });
             observer.observe(section, { attributes: true });
+
+            section.addEventListener("section-activated", () => {
+                 if (isIntroFinished) showModal();
+            });
         }
 
         await fetchData();
@@ -241,6 +273,9 @@ document.addEventListener("DOMContentLoaded", () => {
         if (dom.predictInput) {
             dom.predictInput.addEventListener("input", updatePrediction);
         }
+
+        if (dom.closeModalBtn) dom.closeModalBtn.addEventListener("click", hideModal);
+        if (dom.discoverBtn) dom.discoverBtn.addEventListener("click", hideModal);
     };
 
     init();
