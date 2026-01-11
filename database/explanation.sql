@@ -26,5 +26,20 @@ CREATE TABLE `temperatures` (
   `AAAAMM` int DEFAULT NULL,
   `TX` decimal(3,1) DEFAULT NULL, -- La température maximale
   `TN` decimal(3,1) DEFAULT NULL, -- La température minimale 
-  `TM` decimal(3,1) DEFAULT NULL -- La température moyenne
+  `TM` decimal(3,1) DEFAULT NULL -- La température moyenne@
+)
+
+CREATE TABLE `temperatures-precipitations` (
+  `NUM_POSTE` int DEFAULT NULL,
+  `NOM_USUEL` varchar(28) DEFAULT NULL,
+  `ALTI` int DEFAULT NULL,
+  `AAAAMM` int DEFAULT NULL,
+  `NUM_DECADE` int DEFAULT NULL,
+  `RR` decimal(4,1) DEFAULT NULL, --Le cumul mensuel des hauteurs de précipitations ce mois en millimètres
+  `NBRR` int DEFAULT NULL, --nombre de valeurs prÃ©sentes de hauteur de prÃ©cipitation quotidienne
+  `NBJRR10` int DEFAULT NULL, -- nombre de jours avec RR â‰¥ 10.0 mm
+  `NBJRR30` int DEFAULT NULL, -- nombre de jours avec RR â‰¥ 30.0 mm
+  `TX` decimal(3,1) DEFAULT NULL, -- La température maximale
+  `TN` decimal(3,1) DEFAULT NULL, -- La température minimale
+  `TM` decimal(3,1) DEFAULT NULL  -- La température moyenne
 )

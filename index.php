@@ -25,11 +25,11 @@ declare(strict_types=1); ?>
 
         <main class="flex-1 h-full relative ml-[120px] p-6">
             <div class="w-full h-full bg-white rounded-3xl border border-[#e5e5e5] relative overflow-hidden shadow-sm">
-                <?php require_once 'sections/meteo.php'; ?>
+                <?php require_once 'sections/evolution-temperatures.php'; ?>
+
+                <?php require_once 'sections/evolution-precipitations.php'; ?>
 
                 <?php require_once 'sections/projections.php'; ?>
-
-                <?php require_once 'sections/estimations.php'; ?>
             </div>
         </main>
     </div>
@@ -43,7 +43,8 @@ declare(strict_types=1); ?>
 
     <!-- Scripts -->
     <script src="script/sidebar.js"></script>
-    <script src="script/meteo.js"></script>
+    <script src="script/evolution-temperatures.js"></script>
+    <script src="script/evolution-precipitations.js"></script>
 
     <script src="script/projections.js"></script>
 </body>
