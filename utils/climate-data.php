@@ -2,8 +2,8 @@
 
 declare(strict_types=1);
 
-require_once '../database/database.php';
-require_once 'zones-config.php';
+require_once __DIR__ . '/../database/database.php';
+require_once __DIR__ . '/zones-config.php';
 
 function findZoneForStation(string $numPoste, string $nomUsel): ?string
 {

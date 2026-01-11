@@ -29,7 +29,8 @@ declare(strict_types=1); ?>
 
                 <?php require_once 'sections/evolution-precipitations.php'; ?>
 
-                <?php require_once 'sections/projections.php'; ?>
+
+                <?php require_once 'sections/correlation.php'; ?>
             </div>
         </main>
     </div>
@@ -45,8 +46,8 @@ declare(strict_types=1); ?>
     <script src="script/sidebar.js"></script>
     <script src="script/evolution-temperatures.js"></script>
     <script src="script/evolution-precipitations.js"></script>
+    <script src="script/correlation.js"></script>
 
-    <script src="script/projections.js"></script>
 </body>
 
 </html>
