@@ -5,7 +5,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
     const dom = {
         zoneSelect: document.getElementById("evolution-precip-zone-filter"),
-        yearSelect: document.getElementById("evolution-precip-year-select"),
         refreshBtn: document.getElementById("evolution-precip-refresh-btn"),
         canvas: document.getElementById("evolution-precip-chart"),
         chartTitle: document.getElementById("evolution-precip-chart-title"),
@@ -101,13 +100,6 @@ document.addEventListener("DOMContentLoaded", () => {
             const zones = Object.keys(rawData).sort();
             populateSelect(dom.zoneSelect, zones, "Guadeloupe (Global)");
             
-            const allYears = new Set();
-            Object.values(rawData).forEach(zoneData => {
-                Object.keys(zoneData).forEach(y => allYears.add(parseInt(y)));
-            });
-            const sortedYears = Array.from(allYears).sort((a, b) => b - a);
-            populateSelect(dom.yearSelect, sortedYears, null, sortedYears[0]);
-
             updateDashboard();
 
         } catch (error) {
@@ -139,43 +131,44 @@ document.addEventListener("DOMContentLoaded", () => {
         if (!rawData) return { labels: [], values: [] };
 
         const selectedZone = dom.zoneSelect.value;
-        const selectedYear = parseInt(dom.yearSelect.value);
+        console.log(`Processing decadal precip data for Zone: ${selectedZone}`);
 
-        if (!selectedYear) return { labels: [], values: [] };
+        const decadalData = {}; // decade -> { sum: 0, count: 0 }
 
-        let monthlyValues = new Array(12).fill(null);
-        let counts = new Array(12).fill(0);
+        const aggregateByDecade = (zoneData) => {
+            Object.entries(zoneData).forEach(([year, months]) => {
+                const decade = Math.floor(parseInt(year) / 10) * 10;
+                const decadeLabel = `${decade}s`;
+                if (!decadalData[decadeLabel]) decadalData[decadeLabel] = { sum: 0, count: 0 };
+                
+                Object.values(months).forEach(val => {
+                    if (val !== null) {
+                        decadalData[decadeLabel].sum += val;
+                        decadalData[decadeLabel].count++;
+                    }
+                });
+            });
+        };
 
         if (selectedZone === 'global') {
-            Object.keys(rawData).forEach(zone => {
-                const zoneYearData = rawData[zone][selectedYear];
-                if (zoneYearData) {
-                    Object.entries(zoneYearData).forEach(([monthStr, val]) => {
-                        const monthIndex = parseInt(monthStr) - 1;
-                        if (val !== null) {
-                            monthlyValues[monthIndex] = (monthlyValues[monthIndex] || 0) + val;
-                            counts[monthIndex]++;
-                        }
-                    });
-                }
-            });
-            monthlyValues = monthlyValues.map((sum, i) => counts[i] > 0 ? sum / counts[i] : null);
+            Object.values(rawData).forEach(zoneData => aggregateByDecade(zoneData));
         } else {
-            const zoneYearData = rawData[selectedZone]?.[selectedYear];
-            if (zoneYearData) {
-                Object.entries(zoneYearData).forEach(([monthStr, val]) => {
-                    const monthIndex = parseInt(monthStr) - 1;
-                    monthlyValues[monthIndex] = val;
-                });
-            }
+            const zoneData = rawData[selectedZone];
+            if (zoneData) aggregateByDecade(zoneData);
         }
+
+        const sortedDecades = Object.keys(decadalData).sort();
+        const labels = sortedDecades;
+        const values = sortedDecades.map(decade => 
+            decadalData[decade].count > 0 ? decadalData[decade].sum / decadalData[decade].count : null
+        );
 
         if (dom.chartTitle) {
             const zoneLabel = selectedZone === 'global' ? 'Guadeloupe' : selectedZone;
-            dom.chartTitle.innerText = `Précipitations mensuelles - ${zoneLabel} (${selectedYear})`;
+            dom.chartTitle.innerText = `Évolution par décennie des précipitations - ${zoneLabel}`;
         }
 
-        return { labels: MONTH_NAMES, values: monthlyValues };
+        return { labels, values };
     };
 
     const renderChart = ({ labels, values }) => {
@@ -212,7 +205,7 @@ document.addEventListener("DOMContentLoaded", () => {
                         borderWidth: 1,
                         padding: 10,
                         callbacks: {
-                            label: (ctx) => `${ctx.formattedValue} mm`
+                            label: (ctx) => `${ctx.parsed.y.toFixed(1)} mm`
                         }
                     }
                 },
@@ -222,7 +215,7 @@ document.addEventListener("DOMContentLoaded", () => {
                         grid: { color: '#f5f5f5' },
                         ticks: { 
                             font: { family: "'Cabinet Grotesk', sans-serif" },
-                            callback: (v) => v + ' mm'
+                            callback: (v) => v.toFixed(1) + ' mm'
                         }
                     },
                     x: {
@@ -254,7 +247,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
     const setupListeners = () => {
         if (dom.zoneSelect) dom.zoneSelect.addEventListener("change", updateDashboard);
-        if (dom.yearSelect) dom.yearSelect.addEventListener("change", updateDashboard);
 
         if (dom.refreshBtn) {
             dom.refreshBtn.addEventListener("click", () => {

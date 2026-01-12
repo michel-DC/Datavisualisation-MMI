@@ -14,7 +14,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
     const dom = {
         zoneSelect: document.getElementById("evolution-temp-zone-filter"),
-        yearSelect: document.getElementById("evolution-temp-year-select"),
         refreshBtn: document.getElementById("evolution-temp-refresh-btn"),
         canvas: document.getElementById("evolution-temp-chart"),
         chartTitle: document.getElementById("evolution-temp-chart-title"),
@@ -116,16 +115,6 @@ document.addEventListener("DOMContentLoaded", () => {
             const zones = Object.keys(rawData).sort();
             populateSelect(dom.zoneSelect, zones, "Guadeloupe (Global)");
             
-            // Récupérer toutes les années disponibles (toutes zones confondues)
-            const allYears = new Set();
-            Object.values(rawData).forEach(zoneData => {
-                Object.keys(zoneData).forEach(y => allYears.add(parseInt(y)));
-            });
-            const sortedYears = Array.from(allYears).sort((a, b) => b - a); // Décroissant
-            console.log("Years found:", sortedYears.length);
-            
-            populateSelect(dom.yearSelect, sortedYears, null, sortedYears[0]); // Par défaut l'année la plus récente
-
             updateDashboard();
 
         } catch (error) {
@@ -159,54 +148,44 @@ document.addEventListener("DOMContentLoaded", () => {
         if (!rawData) return { labels: [], values: [] };
 
         const selectedZone = dom.zoneSelect.value;
-        const selectedYear = parseInt(dom.yearSelect.value);
+        console.log(`Processing decadal data for Zone: ${selectedZone}`);
 
-        console.log(`Processing data for Zone: ${selectedZone}, Year: ${selectedYear}`);
+        const decadalData = {}; // decade -> { sum: 0, count: 0 }
 
-        if (!selectedYear) return { labels: [], values: [] };
-
-        // Structure : labels = Mois, values = Températures
-        let monthlyValues = new Array(12).fill(null);
-        let counts = new Array(12).fill(0);
+        const aggregateByDecade = (zoneData) => {
+            Object.entries(zoneData).forEach(([year, months]) => {
+                const decade = Math.floor(parseInt(year) / 10) * 10;
+                const decadeLabel = `${decade}s`;
+                if (!decadalData[decadeLabel]) decadalData[decadeLabel] = { sum: 0, count: 0 };
+                
+                Object.values(months).forEach(temp => {
+                    if (temp !== null) {
+                        decadalData[decadeLabel].sum += temp;
+                        decadalData[decadeLabel].count++;
+                    }
+                });
+            });
+        };
 
         if (selectedZone === 'global') {
-            // Moyenne de toutes les zones pour l'année choisie
-            Object.keys(rawData).forEach(zone => {
-                const zoneYearData = rawData[zone][selectedYear];
-                if (zoneYearData) {
-                    Object.entries(zoneYearData).forEach(([monthStr, temp]) => {
-                        const monthIndex = parseInt(monthStr) - 1; // 01 -> 0
-                        if (temp !== null) {
-                            monthlyValues[monthIndex] = (monthlyValues[monthIndex] || 0) + temp;
-                            counts[monthIndex]++;
-                        }
-                    });
-                }
-            });
-
-            // Faire la moyenne
-            monthlyValues = monthlyValues.map((sum, i) => counts[i] > 0 ? sum / counts[i] : null);
-
+            Object.values(rawData).forEach(zoneData => aggregateByDecade(zoneData));
         } else {
-            // Une seule zone
-            const zoneYearData = rawData[selectedZone]?.[selectedYear];
-            if (zoneYearData) {
-                Object.entries(zoneYearData).forEach(([monthStr, temp]) => {
-                    const monthIndex = parseInt(monthStr) - 1;
-                    monthlyValues[monthIndex] = temp;
-                });
-            }
+            const zoneData = rawData[selectedZone];
+            if (zoneData) aggregateByDecade(zoneData);
         }
-        
-        console.log("Monthly values computed:", monthlyValues);
 
-        // Mettre à jour le titre
+        const sortedDecades = Object.keys(decadalData).sort();
+        const labels = sortedDecades;
+        const values = sortedDecades.map(decade => 
+            decadalData[decade].count > 0 ? decadalData[decade].sum / decadalData[decade].count : null
+        );
+
         if (dom.chartTitle) {
             const zoneLabel = selectedZone === 'global' ? 'Guadeloupe' : selectedZone;
-            dom.chartTitle.innerText = `Températures mensuelles - ${zoneLabel} (${selectedYear})`;
+            dom.chartTitle.innerText = `Évolution par décennie des températures - ${zoneLabel}`;
         }
 
-        return { labels: MONTH_NAMES, values: monthlyValues };
+        return { labels, values };
     };
 
     const renderChart = ({ labels, values }) => {
@@ -269,7 +248,7 @@ document.addEventListener("DOMContentLoaded", () => {
                         grid: { color: '#f5f5f5' },
                         ticks: { 
                             font: { family: "'Cabinet Grotesk', sans-serif" },
-                            callback: function(value) { return value + '°C'; }
+                            callback: function(value) { return value.toFixed(1) + '°C'; }
                         }
                     },
                     x: {
@@ -306,7 +285,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
     const setupListeners = () => {
         if (dom.zoneSelect) dom.zoneSelect.addEventListener("change", updateDashboard);
-        if (dom.yearSelect) dom.yearSelect.addEventListener("change", updateDashboard);
 
         if (dom.refreshBtn) {
             dom.refreshBtn.addEventListener("click", () => {

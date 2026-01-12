@@ -21,14 +21,6 @@ declare(strict_types=1); ?>
                 <i data-lucide="chevron-down" class="absolute right-0 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none"></i>
             </div>
 
-            <!-- Year Select -->
-            <div class="relative group">
-                <select id="evolution-temp-year-select" class="appearance-none bg-transparent border-b border-gray-300 py-2 pr-8 pl-2 text-sm font-medium text-black focus:outline-none focus:border-black transition-colors cursor-pointer min-w-[100px]">
-                    <!-- Populated by JS -->
-                </select>
-                <i data-lucide="chevron-down" class="absolute right-0 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none"></i>
-            </div>
-
             <button id="evolution-temp-refresh-btn" class="ml-4 w-10 h-10 rounded-full border border-gray-200 flex items-center justify-center hover:bg-black hover:text-white transition-all duration-300">
                 <i data-lucide="refresh-cw" class="w-4 h-4"></i>
             </button>
@@ -52,7 +44,7 @@ declare(strict_types=1); ?>
         <!-- Stats Cards -->
         <div class="grid grid-cols-2 gap-4 mt-4 flex-none">
             <div class="bg-[#fafafa] rounded-xl border border-gray-100 p-4 flex flex-col items-center justify-center text-center">
-                <h3 class="text-xs font-bold text-gray-400 uppercase tracking-widest mb-1">Moyenne annuelle</h3>
+                <h3 class="text-xs font-bold text-gray-400 uppercase tracking-widest mb-1">Moyenne décennale</h3>
                 <p id="evolution-temp-avg" class="text-2xl font-medium tracking-tight">-- °C</p>
             </div>
             <div class="bg-[#fafafa] rounded-xl border border-gray-100 p-4 flex flex-col items-center justify-center text-center">
