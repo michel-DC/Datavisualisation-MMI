@@ -39,27 +39,19 @@ declare(strict_types=1); ?>
             </div>
         </div>
 
-        <!-- Stats Panel (Bottom, Compact) -->
-        <div class="flex-none grid grid-cols-3 gap-4">
+        <!-- Stats Panel (Bottom) -->
+        <div class="grid grid-cols-2 gap-4 mt-4 flex-none">
 
             <!-- Pearson Card -->
-            <div class="bg-gray-50 rounded-xl border border-purple-100 p-4">
-                <p class="text-[10px] text-purple-400 font-bold uppercase tracking-widest mb-1">Coefficient de Pearson (r)</p>
-                <div class="flex items-baseline gap-2">
-                    <span class="text-3xl font-black text-purple-600 tracking-tighter" id="correlation-r-value">--</span>
-                    <span class="text-[10px] font-medium text-purple-400">Score de corrélation</span>
-                </div>
+            <div class="bg-[#fafafa] rounded-xl border border-gray-100 p-4 flex flex-col items-center justify-center text-center">
+                <h3 class="text-xs font-bold text-gray-400 uppercase tracking-widest mb-1">Coefficient de Pearson (r)</h3>
+                <p id="correlation-r-value" class="text-2xl font-medium tracking-tight">--</p>
             </div>
 
-            <!-- Legend Card -->
-            <div class="bg-white rounded-xl border border-gray-100 p-4 flex items-center">
-                <div class="grid grid-cols-1 gap-1 w-full">
-                    <div class="flex items-center justify-between text-[10px] text-gray-500">
-                        <span class="flex items-center gap-1.5"><span class="w-1.5 h-1.5 rounded-full bg-purple-500"></span> r > 0 : Positive</span>
-                        <span class="flex items-center gap-1.5"><span class="w-1.5 h-1.5 rounded-full bg-orange-500"></span> r < 0 : Négative</span>
-                                <span class="flex items-center gap-1.5"><span class="w-1.5 h-1.5 rounded-full bg-gray-300"></span> r ≈ 0 : Nulle</span>
-                    </div>
-                </div>
+            <!-- Interpretation Card -->
+            <div class="bg-[#fafafa] rounded-xl border border-gray-100 p-4 flex flex-col items-center justify-center text-center">
+                <h3 class="text-xs font-bold text-gray-400 uppercase tracking-widest mb-1">Interprétation</h3>
+                <p id="correlation-interpretation" class="text-lg font-medium leading-tight text-gray-600">--</p>
             </div>
 
         </div>

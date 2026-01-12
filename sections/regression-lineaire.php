@@ -41,34 +41,32 @@ declare(strict_types=1);
         </div>
 
         <!-- Prediction Panel (Bottom) -->
-        <div class="flex-none grid grid-cols-1 lg:grid-cols-3 gap-4">
+        <div class="flex-none grid grid-cols-1 lg:grid-cols-3 gap-4 mt-4">
 
             <!-- Equation Card -->
-            <div class="bg-[#1e1e1e] rounded-xl p-6 text-white flex flex-col justify-center">
-                <p class="text-[10px] text-gray-400 font-bold uppercase tracking-widest mb-2">Équation du modèle</p>
-                <div class="text-2xl font-black tracking-tight" id="regression-equation">
-                    y = ax + b
-                </div>
+            <div class="bg-[#fafafa] rounded-xl border border-gray-100 p-4 flex flex-col items-center justify-center text-center">
+                <h3 class="text-xs font-bold text-gray-400 uppercase tracking-widest mb-1">Équation du modèle</h3>
+                <p id="regression-equation" class="text-xl font-medium tracking-tight">y = ax + b</p>
             </div>
 
             <!-- Predictor Input -->
-            <div class="bg-white rounded-xl border border-gray-100 p-6">
-                <label for="predict-temp" class="block text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-3">
+            <div class="bg-[#fafafa] rounded-xl border border-gray-100 p-4 flex flex-col justify-center">
+                <label for="predict-temp" class="block text-xs font-bold text-gray-400 uppercase tracking-widest mb-2 text-center">
                     Température à tester (°C)
                 </label>
-                <div class="relative">
+                <div class="relative max-w-[160px] mx-auto">
                     <input type="number" id="predict-temp" step="0.1" placeholder="Ex: 28.5"
-                        class="w-full bg-gray-50 border border-gray-200 rounded-lg py-2 px-4 text-gray-900 focus:outline-none focus:border-black transition-all font-medium">
-                    <span class="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 text-xs">°C</span>
+                        class="w-full bg-white border border-gray-200 rounded-lg py-1.5 px-3 text-gray-900 focus:outline-none focus:border-black transition-all font-medium text-sm">
+                    <span class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 text-xs">°C</span>
                 </div>
             </div>
 
             <!-- Predictor Result -->
-            <div class="bg-gray-50 rounded-xl border border-gray-100 p-6 flex flex-col justify-center">
-                <p class="text-[10px] text-gray-400 font-bold uppercase tracking-widest mb-1">Précipitations Estimées</p>
-                <div class="flex items-baseline gap-2">
-                    <span class="text-4xl font-black text-black" id="prediction-result">--</span>
-                    <span class="text-sm font-medium text-gray-400">mm</span>
+            <div class="bg-[#fafafa] rounded-xl border border-gray-100 p-4 flex flex-col items-center justify-center text-center">
+                <h3 class="text-xs font-bold text-gray-400 uppercase tracking-widest mb-1">Précipitations Estimées</h3>
+                <div class="flex items-baseline gap-1">
+                    <span class="text-2xl font-medium tracking-tight text-black" id="prediction-result">--</span>
+                    <span class="text-xs font-medium text-gray-400">mm</span>
                 </div>
             </div>
 

@@ -132,15 +132,17 @@ document.addEventListener("DOMContentLoaded", () => {
 
     const getInterpretation = (r) => {
         const ar = Math.abs(r);
-        let strength = "";
-        let direction = r > 0 ? "Positive" : "Négative";
+        let text = "";
 
-        if (ar < 0.3) strength = "Nulle ou Faible";
-        else if (ar < 0.5) strength = "Faible";
-        else if (ar < 0.7) strength = "Modérée";
-        else strength = "Forte";
+        if (r > 0.3) {
+            text = "Corrélation positive : Température et précipitations ont tendance à augmenter ensemble.";
+        } else if (r < -0.3) {
+            text = "Corrélation négative : Plus la température augmente, plus les précipitations ont tendance à diminuer.";
+        } else {
+            text = "Corrélation faible ou nulle : Il n'y a pas de lien linéaire évident entre la température et la pluie.";
+        }
 
-        return `${strength} ${direction}`;
+        return text;
     };
 
     const processData = () => {
@@ -216,11 +218,9 @@ document.addEventListener("DOMContentLoaded", () => {
         // Update Text
         if (dom.rValue) {
             dom.rValue.innerText = r.toFixed(3);
-            dom.rValue.className = `text-6xl font-black tracking-tighter ${r < 0 ? 'text-orange-600' : 'text-purple-600'}`;
         }
         if (dom.interpretation) {
             dom.interpretation.innerText = getInterpretation(r);
-            dom.interpretation.className = `text-sm font-medium mt-4 px-4 py-1 rounded-full ${r < 0 ? 'bg-orange-100 text-orange-800' : 'bg-purple-100 text-purple-800'}`;
         }
     };
 
