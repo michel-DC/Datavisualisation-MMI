@@ -18,6 +18,8 @@ document.addEventListener("DOMContentLoaded", () => {
         refreshBtn: document.getElementById("evolution-temp-refresh-btn"),
         canvas: document.getElementById("evolution-temp-chart"),
         chartTitle: document.getElementById("evolution-temp-chart-title"),
+        avgCard: document.getElementById("evolution-temp-avg"),
+        varCard: document.getElementById("evolution-temp-var"),
         modal: document.getElementById("temp-info-modal"),
         modalContent: document.getElementById("temp-modal-content"),
         closeModalBtn: document.getElementById("close-temp-modal"),
@@ -287,6 +289,19 @@ document.addEventListener("DOMContentLoaded", () => {
     const updateDashboard = () => {
         const data = processData();
         renderChart(data);
+
+        const validValues = data.values.filter(v => v !== null);
+        if (validValues.length > 0) {
+            const sum = validValues.reduce((a, b) => a + b, 0);
+            const avg = sum / validValues.length;
+            const variance = validValues.reduce((a, b) => a + Math.pow(b - avg, 2), 0) / validValues.length;
+
+            if (dom.avgCard) dom.avgCard.innerText = `${avg.toFixed(1)} °C`;
+            if (dom.varCard) dom.varCard.innerText = variance.toFixed(2);
+        } else {
+            if (dom.avgCard) dom.avgCard.innerText = "-- °C";
+            if (dom.varCard) dom.varCard.innerText = "--";
+        }
     };
 
     const setupListeners = () => {

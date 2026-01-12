@@ -7,7 +7,7 @@ declare(strict_types=1); ?>
     <div class="flex-none flex items-end justify-between mb-8 border-b border-gray-100 pb-8">
         <div>
             <h2 class="text-sm font-bold text-gray-400 uppercase tracking-widest mb-2">Historique climatique</h2>
-            <h1 class="text-5xl font-medium tracking-tight">Évolution des Températures</h1>
+            <h1 class="text-5xl font-medium tracking-tight">Évolution des Températures en Guadeloupe</h1>
         </div>
 
         <!-- Controls -->
@@ -46,6 +46,18 @@ declare(strict_types=1); ?>
             </div>
             <div class="flex-1 w-full relative min-h-0">
                 <canvas id="evolution-temp-chart"></canvas>
+            </div>
+        </div>
+
+        <!-- Stats Cards -->
+        <div class="grid grid-cols-2 gap-4 mt-4 flex-none">
+            <div class="bg-[#fafafa] rounded-xl border border-gray-100 p-4 flex flex-col items-center justify-center text-center">
+                <h3 class="text-xs font-bold text-gray-400 uppercase tracking-widest mb-1">Moyenne annuelle</h3>
+                <p id="evolution-temp-avg" class="text-2xl font-medium tracking-tight">-- °C</p>
+            </div>
+            <div class="bg-[#fafafa] rounded-xl border border-gray-100 p-4 flex flex-col items-center justify-center text-center">
+                <h3 class="text-xs font-bold text-gray-400 uppercase tracking-widest mb-1">Variance</h3>
+                <p id="evolution-temp-var" class="text-2xl font-medium tracking-tight">--</p>
             </div>
         </div>
     </div>

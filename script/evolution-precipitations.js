@@ -9,6 +9,8 @@ document.addEventListener("DOMContentLoaded", () => {
         refreshBtn: document.getElementById("evolution-precip-refresh-btn"),
         canvas: document.getElementById("evolution-precip-chart"),
         chartTitle: document.getElementById("evolution-precip-chart-title"),
+        avgCard: document.getElementById("evolution-precip-avg"),
+        varCard: document.getElementById("evolution-precip-var"),
         modal: document.getElementById("precip-info-modal"),
         modalContent: document.getElementById("precip-modal-content"),
         closeModalBtn: document.getElementById("close-precip-modal"),
@@ -235,6 +237,19 @@ document.addEventListener("DOMContentLoaded", () => {
     const updateDashboard = () => {
         const data = processData();
         renderChart(data);
+
+        const validValues = data.values.filter(v => v !== null);
+        if (validValues.length > 0) {
+            const sum = validValues.reduce((a, b) => a + b, 0);
+            const avg = sum / validValues.length;
+            const variance = validValues.reduce((a, b) => a + Math.pow(b - avg, 2), 0) / validValues.length;
+
+            if (dom.avgCard) dom.avgCard.innerText = `${avg.toFixed(1)} mm`;
+            if (dom.varCard) dom.varCard.innerText = variance.toFixed(1);
+        } else {
+            if (dom.avgCard) dom.avgCard.innerText = "-- mm";
+            if (dom.varCard) dom.varCard.innerText = "--";
+        }
     };
 
     const setupListeners = () => {
