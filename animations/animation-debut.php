@@ -71,6 +71,10 @@
             // Nettoyage (display: none pour ne plus bloquer les clics)
             .set(".entry-container", {
                 display: "none"
+            })
+            
+            .call(() => {
+                window.dispatchEvent(new CustomEvent("intro-finished"));
             });
     });
 </script>

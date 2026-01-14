@@ -1,8 +1,9 @@
 <?php
+
 declare(strict_types=1);
 
-require_once '../database/database.php';
-require_once 'zones-config.php';
+require_once __DIR__ . '/../database/database.php';
+require_once __DIR__ . '/zones-config.php';
 
 function findZoneForStation(string $numPoste, string $nomUsel): ?string
 {
@@ -25,7 +26,7 @@ function findZoneForStation(string $numPoste, string $nomUsel): ?string
 function getClimateDataByZone(string $tableName, $valueColumns): array
 {
     $link = connexionDB();
-    
+
     $allowedTables = ['precipitations', 'temperatures', 'rayonnements'];
     if (!in_array($tableName, $allowedTables, true)) {
         return [];
@@ -61,10 +62,10 @@ function getClimateDataByZone(string $tableName, $valueColumns): array
         $idStation = (string)$row['ID'];
         $nomStation = (string)$row['NOM'];
         $date = (string)$row['AAAAMM']; // Ex: 202301
-        
+
         $year = (int)substr($date, 0, 4);
         $month = (int)substr($date, 4, 2);
-        
+
         $zone = findZoneForStation($idStation, $nomStation);
 
         if ($zone !== null) {
@@ -99,7 +100,7 @@ function getClimateDataByZone(string $tableName, $valueColumns): array
                         $aggregatedValues[$col] = null;
                     }
                 }
-                
+
                 // Si on a demandé une seule colonne, on retourne la valeur directement
                 // Sinon on retourne un objet {TX: 20, TN: 10}
                 if (count($cols) === 1) {
