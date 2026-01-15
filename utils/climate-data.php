@@ -15,14 +15,6 @@ function findZoneForStation(string $numPoste, string $nomUsel): ?string
     return null;
 }
 
-/**
- * Récupère les données climatiques agrégées par Zone, Année et Mois.
- * Fait la moyenne des stations d'une même zone pour chaque mois.
- * 
- * @param string $tableName Nom de la table (precipitations, temperatures, rayonnements)
- * @param string|array $valueColumns Nom de la colonne ou tableau de colonnes (ex: 'RR' ou ['TX', 'TN'])
- * @return array Structure [Zone][Annee][Mois] = Valeur(s)
- */
 function getClimateDataByZone(string $tableName, $valueColumns): array
 {
     $link = connexionDB();
@@ -40,7 +32,6 @@ function getClimateDataByZone(string $tableName, $valueColumns): array
     $idColumn = ($tableName === 'precipitations') ? 'z' : 'NUM_POSTE';
     $nameColumn = 'NOM_USUEL';
 
-    // Construction de la requête
     $colsSelect = [];
     foreach ($cols as $col) {
         $colsSelect[] = "`$col`";
@@ -54,14 +45,12 @@ function getClimateDataByZone(string $tableName, $valueColumns): array
         return [];
     }
 
-    // 1. Regroupement des valeurs brutes par Zone/Année/Mois
-    // Structure temporaire : $raw[Zone][Annee][Mois][Col] = [val1, val2, ...]
     $raw = [];
 
     while ($row = mysqli_fetch_assoc($result)) {
         $idStation = (string)$row['ID'];
         $nomStation = (string)$row['NOM'];
-        $date = (string)$row['AAAAMM']; // Ex: 202301
+        $date = (string)$row['AAAAMM'];
 
         $year = (int)substr($date, 0, 4);
         $month = (int)substr($date, 4, 2);
@@ -78,11 +67,10 @@ function getClimateDataByZone(string $tableName, $valueColumns): array
         }
     }
 
-    // 2. Calcul des moyennes par zone pour chaque mois
     $finalData = [];
+
     $allZones = array_keys(ZONES);
 
-    // Initialiser toutes les zones pour qu'elles existent dans le JSON final
     foreach ($allZones as $z) {
         $finalData[$z] = [];
     }
@@ -90,7 +78,6 @@ function getClimateDataByZone(string $tableName, $valueColumns): array
     foreach ($raw as $zone => $years) {
         foreach ($years as $year => $months) {
             foreach ($months as $month => $columns) {
-                // Pour chaque colonne demandée (ex: TX, TN), on fait la moyenne des stations
                 $aggregatedValues = [];
                 foreach ($columns as $col => $values) {
                     if (count($values) > 0) {
@@ -101,20 +88,14 @@ function getClimateDataByZone(string $tableName, $valueColumns): array
                     }
                 }
 
-                // Si on a demandé une seule colonne, on retourne la valeur directement
-                // Sinon on retourne un objet {TX: 20, TN: 10}
                 if (count($cols) === 1) {
                     $finalData[$zone][$year][$month] = array_values($aggregatedValues)[0];
                 } else {
                     $finalData[$zone][$year][$month] = $aggregatedValues;
                 }
             }
-            // Trier les mois
-            if (isset($finalData[$zone][$year])) {
-                ksort($finalData[$zone][$year]);
-            }
+            ksort($finalData[$zone][$year]);
         }
-        // Trier les années
         ksort($finalData[$zone]);
     }
 
