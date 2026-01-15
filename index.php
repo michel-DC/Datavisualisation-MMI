@@ -185,6 +185,20 @@ declare(strict_types=1); ?>
         </div>
     </div>
 
+    <!-- Precip Graphic Visualization Modal -->
+    <div id="precip-viz-modal" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-[200] flex items-center justify-center opacity-0 pointer-events-none transition-opacity duration-300">
+        <div class="bg-white rounded-3xl shadow-2xl max-w-5xl w-full mx-4 p-4 relative transform scale-95 transition-transform duration-300" id="precip-viz-content">
+            <!-- Close Button -->
+            <button id="close-precip-viz-modal" class="absolute -top-3 -right-3 z-50 p-2 bg-white text-slate-900 rounded-full shadow-xl hover:bg-slate-50 transition-all border border-slate-100">
+                <i data-lucide="x" class="w-6 h-6"></i>
+            </button>
+            
+            <div class="w-full flex items-center justify-center p-4">
+                <img src="assets/créa/001.png" alt="Visualisation Graphique" class="max-w-full max-h-[80vh] object-contain">
+            </div>
+        </div>
+    </div>
+
     <script src="https://unpkg.com/lucide@latest"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 

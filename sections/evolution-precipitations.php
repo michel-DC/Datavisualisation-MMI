@@ -24,6 +24,13 @@ declare(strict_types=1); ?>
             <button id="evolution-precip-refresh-btn" class="ml-4 w-10 h-10 rounded-full border border-gray-200 flex items-center justify-center hover:bg-black hover:text-white transition-all duration-300">
                 <i data-lucide="refresh-cw" class="w-4 h-4"></i>
             </button>
+
+            <!-- Mode Switch -->
+            <label class="relative inline-flex items-center cursor-pointer ml-4">
+                <input type="checkbox" id="precip-mode-switch" class="sr-only peer">
+                <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-black"></div>
+                <span class="ml-3 text-sm font-medium text-gray-500">Mode Graphique</span>
+            </label>
         </div>
     </div>
 
@@ -31,8 +38,8 @@ declare(strict_types=1); ?>
     <div class="flex-1 flex flex-col min-h-0 overflow-hidden">
 
         <!-- Chart Container -->
-        <div class="flex-1 flex flex-col bg-[#fafafa] rounded-xl border border-gray-100 p-6 min-h-0">
-            <div class="flex items-center justify-between mb-4">
+        <div class="flex-1 flex flex-col bg-[#fafafa] rounded-xl border border-gray-100 p-6 min-h-0 relative overflow-hidden">
+            <div class="flex items-center justify-between mb-4 relative z-20">
                 <h3 class="text-lg font-semibold" id="evolution-precip-chart-title">Cumul mensuel (mm)</h3>
                 <i data-lucide="cloud-rain" class="w-5 h-5 text-blue-500"></i>
             </div>

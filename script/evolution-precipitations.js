@@ -6,6 +6,10 @@ document.addEventListener("DOMContentLoaded", () => {
     const dom = {
         zoneSelect: document.getElementById("evolution-precip-zone-filter"),
         refreshBtn: document.getElementById("evolution-precip-refresh-btn"),
+        modeSwitch: document.getElementById("precip-mode-switch"),
+        vizModal: document.getElementById("precip-viz-modal"),
+        vizContent: document.getElementById("precip-viz-content"),
+        closeVizModalBtn: document.getElementById("close-precip-viz-modal"),
         canvas: document.getElementById("evolution-precip-chart"),
         chartTitle: document.getElementById("evolution-precip-chart-title"),
         avgCard: document.getElementById("evolution-precip-avg"),
@@ -255,6 +259,30 @@ document.addEventListener("DOMContentLoaded", () => {
 
     const setupListeners = () => {
         if (dom.zoneSelect) dom.zoneSelect.addEventListener("change", updateDashboard);
+
+        // Graphic Visualization Modal Logic
+        if (dom.modeSwitch && dom.vizModal) {
+            // Open modal on switch toggle ON
+            dom.modeSwitch.addEventListener("change", (e) => {
+                if (e.target.checked) {
+                    dom.vizModal.classList.remove("opacity-0", "pointer-events-none");
+                    if (dom.vizContent) dom.vizContent.classList.remove("scale-95");
+                } else {
+                    dom.vizModal.classList.add("opacity-0", "pointer-events-none");
+                    if (dom.vizContent) dom.vizContent.classList.add("scale-95");
+                }
+            });
+
+            // Close modal with X button
+            if (dom.closeVizModalBtn) {
+                dom.closeVizModalBtn.addEventListener("click", () => {
+                    dom.vizModal.classList.add("opacity-0", "pointer-events-none");
+                    if (dom.vizContent) dom.vizContent.classList.add("scale-95");
+                    // Uncheck the switch when closing via X button
+                    dom.modeSwitch.checked = false;
+                });
+            }
+        }
 
         if (dom.refreshBtn) {
             dom.refreshBtn.addEventListener("click", () => {
