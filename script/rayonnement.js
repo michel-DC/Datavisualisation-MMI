@@ -9,7 +9,10 @@ document.addEventListener("DOMContentLoaded", () => {
         popupDate: document.getElementById('popup-date'),
         popupContainer: document.getElementById('popup-data-container'),
         closeBtn: document.getElementById('close-popup'),
-        section: document.getElementById('section-rayonnement')
+        section: document.getElementById('section-rayonnement'),
+        avgCard: document.getElementById("rayonnement-avg"),
+        varCard: document.getElementById("rayonnement-var"),
+        stdCard: document.getElementById("rayonnement-std")
     };
 
     const MONTH_NAMES = [
@@ -21,6 +24,7 @@ document.addEventListener("DOMContentLoaded", () => {
         if (!dom.section) return; 
 
         await fetchData();
+        updateGlobalStats();
         setupListeners();
     };
 
@@ -32,6 +36,25 @@ document.addEventListener("DOMContentLoaded", () => {
             radiationData = json.data;
         } catch (error) {
             console.error("Error fetching radiation data:", error);
+        }
+    };
+
+    const updateGlobalStats = () => {
+        if (!radiationData) return;
+
+        const values = Object.values(radiationData)
+            .filter(d => d !== null && d.value !== null)
+            .map(d => d.value);
+
+        if (values.length > 0) {
+            const sum = values.reduce((a, b) => a + b, 0);
+            const avg = sum / values.length;
+            const variance = values.reduce((a, b) => a + Math.pow(b - avg, 2), 0) / values.length;
+            const stdDev = Math.sqrt(variance);
+
+            if (dom.avgCard) dom.avgCard.innerText = `${avg.toFixed(1)} J/cm²`;
+            if (dom.varCard) dom.varCard.innerText = variance.toFixed(1);
+            if (dom.stdCard) dom.stdCard.innerText = `${stdDev.toFixed(1)} J/cm²`;
         }
     };
 

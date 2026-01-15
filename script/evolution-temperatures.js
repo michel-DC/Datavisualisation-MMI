@@ -19,6 +19,7 @@ document.addEventListener("DOMContentLoaded", () => {
         chartTitle: document.getElementById("evolution-temp-chart-title"),
         avgCard: document.getElementById("evolution-temp-avg"),
         varCard: document.getElementById("evolution-temp-var"),
+        stdCard: document.getElementById("evolution-temp-std"),
         modal: document.getElementById("temp-info-modal"),
         modalContent: document.getElementById("temp-modal-content"),
         closeModalBtn: document.getElementById("close-temp-modal"),
@@ -274,12 +275,15 @@ document.addEventListener("DOMContentLoaded", () => {
             const sum = validValues.reduce((a, b) => a + b, 0);
             const avg = sum / validValues.length;
             const variance = validValues.reduce((a, b) => a + Math.pow(b - avg, 2), 0) / validValues.length;
+            const stdDev = Math.sqrt(variance);
 
             if (dom.avgCard) dom.avgCard.innerText = `${avg.toFixed(1)} °C`;
             if (dom.varCard) dom.varCard.innerText = variance.toFixed(2);
+            if (dom.stdCard) dom.stdCard.innerText = `${stdDev.toFixed(2)} °C`;
         } else {
             if (dom.avgCard) dom.avgCard.innerText = "-- °C";
             if (dom.varCard) dom.varCard.innerText = "--";
+            if (dom.stdCard) dom.stdCard.innerText = "-- °C";
         }
     };
 

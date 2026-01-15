@@ -42,7 +42,7 @@ declare(strict_types=1); ?>
         </div>
 
         <!-- Stats Cards -->
-        <div class="grid grid-cols-2 gap-4 mt-4 flex-none">
+        <div class="grid grid-cols-3 gap-4 mt-4 flex-none">
             <div class="bg-[#fafafa] rounded-xl border border-gray-100 p-4 flex flex-col items-center justify-center text-center">
                 <h3 class="text-xs font-bold text-gray-400 uppercase tracking-widest mb-1">Moyenne décennale</h3>
                 <p id="evolution-precip-avg" class="text-2xl font-medium tracking-tight">-- mm</p>
@@ -50,6 +50,10 @@ declare(strict_types=1); ?>
             <div class="bg-[#fafafa] rounded-xl border border-gray-100 p-4 flex flex-col items-center justify-center text-center">
                 <h3 class="text-xs font-bold text-gray-400 uppercase tracking-widest mb-1">Variance</h3>
                 <p id="evolution-precip-var" class="text-2xl font-medium tracking-tight">--</p>
+            </div>
+            <div class="bg-[#fafafa] rounded-xl border border-gray-100 p-4 flex flex-col items-center justify-center text-center">
+                <h3 class="text-xs font-bold text-gray-400 uppercase tracking-widest mb-1">Écart-type</h3>
+                <p id="evolution-precip-std" class="text-2xl font-medium tracking-tight">-- mm</p>
             </div>
         </div>
     </div>

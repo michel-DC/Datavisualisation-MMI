@@ -10,6 +10,7 @@ document.addEventListener("DOMContentLoaded", () => {
         chartTitle: document.getElementById("evolution-precip-chart-title"),
         avgCard: document.getElementById("evolution-precip-avg"),
         varCard: document.getElementById("evolution-precip-var"),
+        stdCard: document.getElementById("evolution-precip-std"),
         modal: document.getElementById("precip-info-modal"),
         modalContent: document.getElementById("precip-modal-content"),
         closeModalBtn: document.getElementById("close-precip-modal"),
@@ -236,12 +237,15 @@ document.addEventListener("DOMContentLoaded", () => {
             const sum = validValues.reduce((a, b) => a + b, 0);
             const avg = sum / validValues.length;
             const variance = validValues.reduce((a, b) => a + Math.pow(b - avg, 2), 0) / validValues.length;
+            const stdDev = Math.sqrt(variance);
 
             if (dom.avgCard) dom.avgCard.innerText = `${avg.toFixed(1)} mm`;
             if (dom.varCard) dom.varCard.innerText = variance.toFixed(1);
+            if (dom.stdCard) dom.stdCard.innerText = `${stdDev.toFixed(1)} mm`;
         } else {
             if (dom.avgCard) dom.avgCard.innerText = "-- mm";
             if (dom.varCard) dom.varCard.innerText = "--";
+            if (dom.stdCard) dom.stdCard.innerText = "-- mm";
         }
     };
 
