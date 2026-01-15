@@ -11,6 +11,7 @@ document.addEventListener("DOMContentLoaded", () => {
         avgCard: document.getElementById("evolution-precip-avg"),
         varCard: document.getElementById("evolution-precip-var"),
         stdCard: document.getElementById("evolution-precip-std"),
+        rangeCard: document.getElementById("evolution-precip-range"),
         modal: document.getElementById("precip-info-modal"),
         modalContent: document.getElementById("precip-modal-content"),
         closeModalBtn: document.getElementById("close-precip-modal"),
@@ -238,14 +239,17 @@ document.addEventListener("DOMContentLoaded", () => {
             const avg = sum / validValues.length;
             const variance = validValues.reduce((a, b) => a + Math.pow(b - avg, 2), 0) / validValues.length;
             const stdDev = Math.sqrt(variance);
+            const range = Math.max(...validValues) - Math.min(...validValues);
 
             if (dom.avgCard) dom.avgCard.innerText = `${avg.toFixed(1)} mm`;
             if (dom.varCard) dom.varCard.innerText = variance.toFixed(1);
             if (dom.stdCard) dom.stdCard.innerText = `${stdDev.toFixed(1)} mm`;
+            if (dom.rangeCard) dom.rangeCard.innerText = `${range.toFixed(1)} mm`;
         } else {
             if (dom.avgCard) dom.avgCard.innerText = "-- mm";
             if (dom.varCard) dom.varCard.innerText = "--";
             if (dom.stdCard) dom.stdCard.innerText = "-- mm";
+            if (dom.rangeCard) dom.rangeCard.innerText = "-- mm";
         }
     };
 

@@ -12,7 +12,8 @@ document.addEventListener("DOMContentLoaded", () => {
         section: document.getElementById('section-rayonnement'),
         avgCard: document.getElementById("rayonnement-avg"),
         varCard: document.getElementById("rayonnement-var"),
-        stdCard: document.getElementById("rayonnement-std")
+        stdCard: document.getElementById("rayonnement-std"),
+        rangeCard: document.getElementById("rayonnement-range")
     };
 
     const MONTH_NAMES = [
@@ -51,10 +52,12 @@ document.addEventListener("DOMContentLoaded", () => {
             const avg = sum / values.length;
             const variance = values.reduce((a, b) => a + Math.pow(b - avg, 2), 0) / values.length;
             const stdDev = Math.sqrt(variance);
+            const range = Math.max(...values) - Math.min(...values);
 
             if (dom.avgCard) dom.avgCard.innerText = `${avg.toFixed(1)} J/cm²`;
             if (dom.varCard) dom.varCard.innerText = variance.toFixed(1);
             if (dom.stdCard) dom.stdCard.innerText = `${stdDev.toFixed(1)} J/cm²`;
+            if (dom.rangeCard) dom.rangeCard.innerText = `${range.toFixed(1)} J/cm²`;
         }
     };
 

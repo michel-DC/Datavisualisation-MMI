@@ -66,22 +66,24 @@ declare(strict_types=1); ?>
             </div>
         </div>
 
-        <!-- Stats Cards -->
-        <div class="grid grid-cols-3 gap-4 mt-4 flex-none">
-            <div class="bg-[#fafafa] rounded-xl border border-gray-100 p-4 flex flex-col items-center justify-center text-center">
-                <h3 class="text-xs font-bold text-gray-400 uppercase tracking-widest mb-1">Rayonnement Moyen</h3>
-                <p id="rayonnement-avg" class="text-2xl font-medium tracking-tight">-- J/cm²</p>
-            </div>
-            <div class="bg-[#fafafa] rounded-xl border border-gray-100 p-4 flex flex-col items-center justify-center text-center">
-                <h3 class="text-xs font-bold text-gray-400 uppercase tracking-widest mb-1">Variance</h3>
-                <p id="rayonnement-var" class="text-2xl font-medium tracking-tight">--</p>
-            </div>
-            <div class="bg-[#fafafa] rounded-xl border border-gray-100 p-4 flex flex-col items-center justify-center text-center">
-                <h3 class="text-xs font-bold text-gray-400 uppercase tracking-widest mb-1">Écart-type</h3>
-                <p id="rayonnement-std" class="text-2xl font-medium tracking-tight">-- J/cm²</p>
-            </div>
-        </div>
-    </div>
+                <!-- Stats Cards -->
+                <div class="grid grid-cols-4 gap-4 mt-4 flex-none">
+                    <div class="bg-[#fafafa] rounded-xl border border-gray-100 p-4 flex flex-col items-center justify-center text-center">
+                        <h3 class="text-xs font-bold text-gray-400 uppercase tracking-widest mb-1">Rayonnement Moyen</h3>
+                        <p id="rayonnement-avg" class="text-2xl font-medium tracking-tight">-- J/cm²</p>
+                    </div>
+                    <div class="bg-[#fafafa] rounded-xl border border-gray-100 p-4 flex flex-col items-center justify-center text-center">
+                        <h3 class="text-xs font-bold text-gray-400 uppercase tracking-widest mb-1">Variance</h3>
+                        <p id="rayonnement-var" class="text-2xl font-medium tracking-tight">--</p>   
+                    </div>
+                    <div class="bg-[#fafafa] rounded-xl border border-gray-100 p-4 flex flex-col items-center justify-center text-center">
+                        <h3 class="text-xs font-bold text-gray-400 uppercase tracking-widest mb-1">Écart-type</h3>
+                        <p id="rayonnement-std" class="text-2xl font-medium tracking-tight">-- J/cm²</p>
+                    </div>
+                                <div class="bg-[#fafafa] rounded-xl border border-gray-100 p-4 flex flex-col items-center justify-center text-center">
+                                    <h3 class="text-xs font-bold text-gray-400 uppercase tracking-widest mb-1">Étendue</h3>
+                                    <p id="rayonnement-range" class="text-2xl font-medium tracking-tight">-- J/cm²</p>
+                                </div>                </div>    </div>
     </div>
 
     <!-- Popup / Modal -->

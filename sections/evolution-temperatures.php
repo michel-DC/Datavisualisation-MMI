@@ -42,7 +42,7 @@ declare(strict_types=1); ?>
         </div>
 
         <!-- Stats Cards -->
-        <div class="grid grid-cols-3 gap-4 mt-4 flex-none">
+        <div class="grid grid-cols-4 gap-4 mt-4 flex-none">
             <div class="bg-[#fafafa] rounded-xl border border-gray-100 p-4 flex flex-col items-center justify-center text-center">
                 <h3 class="text-xs font-bold text-gray-400 uppercase tracking-widest mb-1">Moyenne décennale</h3>
                 <p id="evolution-temp-avg" class="text-2xl font-medium tracking-tight">-- °C</p>
@@ -54,6 +54,10 @@ declare(strict_types=1); ?>
             <div class="bg-[#fafafa] rounded-xl border border-gray-100 p-4 flex flex-col items-center justify-center text-center">
                 <h3 class="text-xs font-bold text-gray-400 uppercase tracking-widest mb-1">Écart-type</h3>
                 <p id="evolution-temp-std" class="text-2xl font-medium tracking-tight">-- °C</p>
+            </div>
+            <div class="bg-[#fafafa] rounded-xl border border-gray-100 p-4 flex flex-col items-center justify-center text-center">
+                <h3 class="text-xs font-bold text-gray-400 uppercase tracking-widest mb-1">Étendue</h3>
+                <p id="evolution-temp-range" class="text-2xl font-medium tracking-tight">-- °C</p>
             </div>
         </div>
     </div>
